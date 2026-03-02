@@ -47,8 +47,8 @@ export async function handleUserRegistration(
         .maybeSingle(); // 使用 maybeSingle 避免 "no rows" 报错
 
     if (fetchError) {
-        console.error("[auth] Failed to query user:", fetchError.message);
-        throw new Error("Database query failed");
+        console.error("[auth] Failed to query user (fetchError):", fetchError);
+        throw new Error(`Database query failed: ${fetchError.message}`);
     }
 
     // 用户已存在，直接返回（不重新生成 Token）
@@ -81,8 +81,8 @@ export async function handleUserRegistration(
         .single();
 
     if (insertError) {
-        console.error("[auth] Failed to insert user:", insertError.message);
-        throw new Error("Database sync failed");
+        console.error("[auth] Failed to insert user (insertError):", insertError);
+        throw new Error(`Database insert failed: ${insertError.message}`);
     }
 
     // ─── Step 5: 同步到 Cloudflare KV（通过网关 Admin API）─────────
