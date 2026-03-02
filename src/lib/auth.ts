@@ -98,7 +98,7 @@ export async function handleUserRegistration(
         const response = await fetch(`${gatewayUrl}/admin/provision`, {
             method: "POST",
             headers: {
-                "X-Admin-Secret": process.env.ADMIN_KEY!,
+                "Authorization": `Bearer ${process.env.ADMIN_KEY}`,
                 "Content-Type": "application/json",
             },
             body: JSON.stringify({
