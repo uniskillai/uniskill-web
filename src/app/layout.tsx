@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import Providers from "./providers";
 
 /* ─── 字体配置：使用 Inter 字体提升文字质感 ─── */
 const inter = Inter({
@@ -22,7 +23,7 @@ export const metadata: Metadata = {
   },
 };
 
-/* ─── 根布局：注入字体 + 全局暗色背景 ─── */
+/* ─── 根布局：注入字体 + SessionProvider + 全局暗色背景 ─── */
 export default function RootLayout({
   children,
 }: {
@@ -31,8 +32,10 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} dark`}>
       <body className="bg-[#0a0f1e] text-white antialiased">
-        {children}
+        {/* Providers 包裹层包含 NextAuth SessionProvider */}
+        <Providers>{children}</Providers>
       </body>
     </html>
   );
 }
+
