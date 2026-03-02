@@ -14,8 +14,8 @@ const handler = NextAuth({
     /* 配置 GitHub OAuth Provider */
     providers: [
         GithubProvider({
-            clientId: process.env.GITHUB_ID!,
-            clientSecret: process.env.GITHUB_SECRET!,
+            clientId: process.env.GITHUB_CLIENT_ID!,
+            clientSecret: process.env.GITHUB_CLIENT_SECRET!,
         }),
     ],
 
