@@ -105,18 +105,26 @@ export default function SignInModal({ isOpen, onClose }: SignInModalProps) {
                         onClick={() => phase === "idle" && onClose()}
                     />
 
-                    {/* ─── Modal 内容 ─── */}
+                    {/* ─── Modal 卡片：精确居中 + 支持拖拽 ─── */}
                     <motion.div
                         key="modal"
-                        initial={{ opacity: 0, scale: 0.94, y: 16 }}
-                        animate={{ opacity: 1, scale: 1, y: 0 }}
-                        exit={{ opacity: 0, scale: 0.94, y: 16 }}
+                        drag
+                        dragMomentum={false}
+                        dragElastic={0.1}
+                        initial={{ opacity: 0, scale: 0.94, x: "-50%", y: "-50%" }}
+                        animate={{ opacity: 1, scale: 1, x: "-50%", y: "-50%" }}
+                        exit={{ opacity: 0, scale: 0.94, x: "-50%", y: "-50%" }}
                         transition={{ duration: 0.25, ease: [0.25, 0.46, 0.45, 0.94] as const }}
-                        className="fixed inset-0 z-[101] flex items-center justify-center p-4 pointer-events-none"
+                        style={{ top: "50%", left: "50%" }}
+                        className="fixed z-[101] w-[90vw] max-w-sm"
                     >
-                        <div className="glass-card w-full max-w-sm p-8 text-center pointer-events-auto relative overflow-hidden">
+                        <div className="glass-card p-8 text-center relative overflow-hidden">
                             {/* 顶部渐变装饰线 */}
                             <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-blue-500/0 via-blue-500/80 to-purple-500/0" />
+
+                            {/* 拖拽把手：顶部灰色小条，提示可拖动 */}
+                            <div className="absolute top-3 left-1/2 -translate-x-1/2 w-8 h-1 rounded-full bg-slate-600/70 cursor-grab active:cursor-grabbing" title="Drag to move" />
+
 
                             {/* ─── Phase: idle — 确认授权 ─── */}
                             {phase === "idle" && (
