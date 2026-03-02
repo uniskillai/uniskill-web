@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, useScroll, useTransform } from "framer-motion";
-import { useRef } from "react";
+import { useSession, signIn, signOut } from "next-auth/react";
 
 /* ─── Navbar 组件：固定在顶部的导航栏 ──────────────────────────────────
    功能：随滚动增强背景模糊效果，Logo 在左，Sign In 按钮在右
@@ -82,16 +82,62 @@ export default function Navbar() {
                         Pricing
                     </a>
 
-                    {/* Sign In 主按钮 */}
-                    <motion.button
-                        whileHover={{ scale: 1.03 }}
-                        whileTap={{ scale: 0.97 }}
-                        className="px-4 py-2 rounded-lg text-sm font-semibold border border-blue-500/50 text-blue-400 hover:bg-blue-500/10 hover:border-blue-400 transition-all duration-200"
-                    >
-                        Sign In
-                    </motion.button>
+                    {/* Sign In / Dashboard 按钮：根据登录状态切换 */}
+                    <NavbarAuthButton />
                 </motion.div>
             </nav>
         </motion.header>
+    );
+}
+
+/* ─── NavbarAuthButton：根据登录状态显示不同按钮 ────────────────────────
+   - 未登录：显示 Sign In → 触发 GitHub OAuth
+   - 已登录：显示用户头像 + Dashboard 链接 + Sign Out
+   ─────────────────────────────────────────────────────────────────────── */
+function NavbarAuthButton() {
+    const { data: session, status } = useSession();
+
+    /* 加载中：显示占位骨架 */
+    if (status === "loading") {
+        return <div className="w-20 h-8 rounded-lg bg-slate-700/50 animate-pulse" />;
+    }
+
+    /* 已登录：头像 + Dashboard + Sign Out */
+    if (session?.user) {
+        return (
+            <div className="flex items-center gap-2">
+                {/* Dashboard 入口 */}
+                <motion.a
+                    href="/dashboard"
+                    whileHover={{ scale: 1.03 }}
+                    whileTap={{ scale: 0.97 }}
+                    className="px-4 py-2 rounded-lg text-sm font-semibold bg-blue-500/15 border border-blue-500/40 text-blue-400 hover:bg-blue-500/25 transition-all"
+                >
+                    Dashboard
+                </motion.a>
+                {/* 用户头像（点击 Sign Out） */}
+                {session.user.image && (
+                    <button onClick={() => signOut({ callbackUrl: "/" })} title="Sign Out">
+                        <img
+                            src={session.user.image}
+                            alt={session.user.name ?? "User"}
+                            className="w-8 h-8 rounded-full border border-slate-700 hover:border-slate-500 transition-colors"
+                        />
+                    </button>
+                )}
+            </div>
+        );
+    }
+
+    /* 未登录：Sign In 按钮 → GitHub OAuth */
+    return (
+        <motion.button
+            whileHover={{ scale: 1.03 }}
+            whileTap={{ scale: 0.97 }}
+            onClick={() => signIn("github", { callbackUrl: "/dashboard" })}
+            className="px-4 py-2 rounded-lg text-sm font-semibold border border-blue-500/50 text-blue-400 hover:bg-blue-500/10 hover:border-blue-400 transition-all duration-200"
+        >
+            Sign In
+        </motion.button>
     );
 }
