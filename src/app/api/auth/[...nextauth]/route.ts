@@ -72,11 +72,6 @@ const handler = NextAuth({
             return session;
         },
     },
-
-    /* 自定义登录页面（可选，使用 NextAuth 默认页面则不需要） */
-    pages: {
-        signIn: "/auth/signin",
-    },
 });
 
 /* ─── 导出 GET/POST handler 供 App Router 使用 ─── */
