@@ -16,7 +16,7 @@ export interface CreditEvent {
     created_at: string;    // ISO 8601 timestamp
 }
 
-export async function GET() {
+export async function GET(req: Request) {
     // 1. 验证登录态
     const session = await getServerSession(authOptions as any) as Session | null;
     if (!session?.user?.githubId) {
@@ -29,14 +29,19 @@ export async function GET() {
         process.env.SUPABASE_SERVICE_ROLE_KEY!
     );
 
+    // 从 URL 读取 limit 参数，默认 5，最大 100
+    const url = new URL(req.url);
+    const limit = Math.min(100, Math.max(1, parseInt(url.searchParams.get("limit") ?? "5", 10)));
+
     try {
-        // 3. 查询 credit_events 表：按时间降序取最新 5 条
+        // 3. 查询 credit_events 表：按时间降序取最新 N 条
         const { data, error } = await supabase
             .from("credit_events")
             .select("id, skill_name, amount, created_at")
             .eq("github_id", session.user.githubId)
             .order("created_at", { ascending: false })
-            .limit(5);
+            .limit(limit);
+
 
         // 若 table 尚不存在（PGRST116 或 42P01），返回空数组而非报错
         if (error) {
