@@ -248,7 +248,12 @@ export default function DashboardPage() {
     }
 
     /* 已登录：渲染 Dashboard */
-    const { user } = session!;
+    /* 已登录：渲染 Dashboard */
+    const user = session?.user;
+
+    // Safety check matching status
+    if (!user) return null;
+
     const rawToken = user.rawToken;
     const initialCredits = user.credits ?? 50;
 
