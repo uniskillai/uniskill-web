@@ -4,7 +4,7 @@
 import { NextResponse } from "next/server";
 import { getServerSession, Session } from "next-auth";
 import { createClient } from "@supabase/supabase-js";
-import { handler as authOptions } from "../../auth/[...nextauth]/route";
+import { authOptions } from "@/lib/authOptions";
 
 export const dynamic = "force-dynamic";
 
