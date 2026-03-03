@@ -10,6 +10,9 @@ import { usePathname } from "next/navigation";
 export default function Navbar() {
     /* 监听页面滚动，动态调整导航栏背景透明度 */
     const { scrollY } = useScroll();
+    /* 检测当前路由，用于 Skills 链接的 active 高亮（顶层调用，所有用户共享） */
+    const pathname = usePathname();
+    const isSkillsActive = pathname === "/dashboard/skills";
     const navBg = useTransform(
         scrollY,
         [0, 80],
@@ -83,6 +86,23 @@ export default function Navbar() {
                         Pricing
                     </a>
 
+                    {/* Skills 链接：对所有用户（含未登录）公开显示，active 时 indigo 高亮 */}
+                    <motion.a
+                        href="/dashboard/skills"
+                        whileHover={{ scale: 1.03 }}
+                        whileTap={{ scale: 0.97 }}
+                        className={`hidden md:flex items-center gap-1.5 text-sm font-medium transition-all px-2 py-1 rounded-lg ${isSkillsActive
+                                ? "text-indigo-400 bg-indigo-500/10 border border-indigo-500/25"
+                                : "text-slate-400 hover:text-slate-200"
+                            }`}
+                    >
+                        {/* Zap 图标 */}
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <polygon points="13,2 3,14 12,14 11,22 21,10 12,10 13,2" />
+                        </svg>
+                        Skills
+                    </motion.a>
+
                     {/* Sign In / Dashboard 按钮：根据登录状态切换 */}
                     <NavbarAuthButton />
                 </motion.div>
@@ -92,14 +112,11 @@ export default function Navbar() {
 }
 
 /* ─── NavbarAuthButton：根据登录状态显示不同按钮 ────────────────────────
-   - 未登录：点击 Sign In → 打开 SignInModal 弹窗确认授权
-   - 已登录：显示用户头像 + Dashboard 链接 + Sign Out
+   - 未登录：显示 Sign in with GitHub 按钮
+   - 已登录：显示 Dashboard 链接 + 用户头像（Skills 链接已移至公共区域）
    ─────────────────────────────────────────────────────────────────────── */
 function NavbarAuthButton() {
     const { data: session, status } = useSession();
-    /* 检测当前路由，用于 Skills 链接的 active 高亮 */
-    const pathname = usePathname();
-    const isSkillsActive = pathname === "/dashboard/skills";
 
     if (status === "loading") {
         return <div className="w-32 h-8 rounded-lg bg-slate-700/50 animate-pulse" />;
@@ -108,22 +125,6 @@ function NavbarAuthButton() {
     if (session?.user) {
         return (
             <div className="flex items-center gap-2">
-                {/* Skills Store 链接：带 Zap 图标，当前在 /dashboard/skills 时 indigo 高亮 */}
-                <motion.a
-                    href="/dashboard/skills"
-                    whileHover={{ scale: 1.03 }}
-                    whileTap={{ scale: 0.97 }}
-                    className={`hidden md:flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-semibold transition-all ${isSkillsActive
-                            ? "bg-indigo-500/15 border border-indigo-500/40 text-indigo-400"
-                            : "text-slate-400 hover:text-slate-200 hover:bg-slate-800/60"
-                        }`}
-                >
-                    {/* Zap 图标 */}
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <polygon points="13,2 3,14 12,14 11,22 21,10 12,10 13,2" />
-                    </svg>
-                    Skills
-                </motion.a>
                 <motion.a
                     href="/dashboard"
                     whileHover={{ scale: 1.03 }}
