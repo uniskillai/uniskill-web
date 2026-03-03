@@ -92,7 +92,7 @@ export async function handleUserRegistration(
         const { error: eventError } = await supabase
             .from("credit_events")
             .insert({
-                github_id: githubId,
+                github_id: Number(githubId),   // bigint 列，需传数字
                 skill_name: "Welcome Bonus",
                 amount: 50,
             });

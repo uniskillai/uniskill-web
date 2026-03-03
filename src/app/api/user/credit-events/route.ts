@@ -34,11 +34,11 @@ export async function GET(req: Request) {
     const limit = Math.min(100, Math.max(1, parseInt(url.searchParams.get("limit") ?? "5", 10)));
 
     try {
-        // 3. 查询 credit_events 表：按时间降序取最新 N 条
+        // 3. 查询 credit_events 表：github_id 是 bigint，需转为数字
         const { data, error } = await supabase
             .from("credit_events")
             .select("id, skill_name, amount, created_at")
-            .eq("github_id", session.user.githubId)
+            .eq("github_id", Number(session.user.githubId))
             .order("created_at", { ascending: false })
             .limit(limit);
 
