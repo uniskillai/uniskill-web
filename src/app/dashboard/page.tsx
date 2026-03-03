@@ -8,6 +8,7 @@ import { useSession, signIn, signOut } from "next-auth/react";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
+import QuickStart from "@/components/Dashboard/QuickStart";
 
 /* ─── Token 展示卡片组件 ────────────────────────────────────────────────
    首次登录时显示原始 Token，用户必须立即复制保存，刷新后不可再查
@@ -144,55 +145,6 @@ function CreditsBar({ credits = 50, total = 50 }: { credits?: number; total?: nu
                 />
             </div>
             <p className="text-xs text-slate-600 mt-2">Each API call consumes 1 credit · <a href="#" className="text-blue-500 hover:underline">Upgrade plan</a></p>
-        </div>
-    );
-}
-
-/* ─── 快速接入代码示例组件 ───────────────────────────────────────────── */
-function QuickstartCard({ token }: { token?: string }) {
-    const [copied, setCopied] = useState(false);
-    const displayToken = token ?? "us-your-token-here";
-
-    const codeSnippet = `curl https://api.uniskill.io/v1/search \\
-  -H "Authorization: Bearer ${displayToken}" \\
-  -H "Content-Type: application/json" \\
-  -d '{"query": "latest AI agent frameworks"}'`;
-
-    const handleCopy = async () => {
-        await navigator.clipboard.writeText(codeSnippet);
-        setCopied(true);
-        setTimeout(() => setCopied(false), 2000);
-    };
-
-    return (
-        <div className="glass-card p-6 border border-slate-700/50">
-            <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-lg bg-cyan-500/10 flex items-center justify-center">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#06b6d4" strokeWidth="2">
-                            <polyline points="16,18 22,12 16,6" /><polyline points="8,6 2,12 8,18" />
-                        </svg>
-                    </div>
-                    <span className="text-sm font-semibold text-slate-300">Quick Start</span>
-                </div>
-                <motion.button
-                    whileTap={{ scale: 0.95 }}
-                    onClick={handleCopy}
-                    className="flex items-center gap-1.5 px-3 py-1 rounded-md text-xs text-slate-500 border border-slate-700 hover:border-slate-600 hover:text-slate-300 transition-all"
-                >
-                    {copied ? "✓ Copied" : "Copy"}
-                </motion.button>
-            </div>
-            <div className="code-block text-xs leading-relaxed whitespace-pre-wrap break-all">
-                <span className="text-blue-400">curl</span>
-                <span className="text-slate-300"> https://api.uniskill.io/v1/search \</span>{"\n"}
-                {"  "}<span className="text-yellow-400">-H</span>
-                <span className="text-green-400"> &quot;Authorization: Bearer <span className="text-cyan-400">{displayToken}</span>&quot;</span>{" \\"}{"\n"}
-                {"  "}<span className="text-yellow-400">-H</span>
-                <span className="text-green-400"> &quot;Content-Type: application/json&quot;</span>{" \\"}{"\n"}
-                {"  "}<span className="text-yellow-400">-d</span>
-                <span className="text-slate-300"> &apos;&#123;&quot;query&quot;: &quot;latest AI agent frameworks&quot;&#125;&apos;</span>
-            </div>
         </div>
     );
 }
@@ -371,7 +323,7 @@ export default function DashboardPage() {
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.3, duration: 0.5 }}
                     >
-                        <QuickstartCard token={rawToken} />
+                        <QuickStart rawApiToken={rawToken} />
                     </motion.div>
                 </div>
 
