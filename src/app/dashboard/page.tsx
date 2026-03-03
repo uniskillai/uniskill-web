@@ -100,8 +100,8 @@ function TokenCard({ rawToken }: { rawToken?: string }) {
                         whileTap={{ scale: 0.95 }}
                         onClick={() => handleCopy(rawToken)}
                         className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold transition-all ${copied
-                                ? "bg-green-500/20 text-green-400 border border-green-500/30"
-                                : "bg-blue-500/15 text-blue-400 border border-blue-500/30 hover:bg-blue-500/25"
+                            ? "bg-green-500/20 text-green-400 border border-green-500/30"
+                            : "bg-blue-500/15 text-blue-400 border border-blue-500/30 hover:bg-blue-500/25"
                             }`}
                     >
                         {copied ? (
@@ -250,7 +250,36 @@ export default function DashboardPage() {
     /* 已登录：渲染 Dashboard */
     const { user } = session!;
     const rawToken = user.rawToken;
-    const credits = user.credits ?? 50;
+    const initialCredits = user.credits ?? 50;
+
+    const [liveCredits, setLiveCredits] = useState<number>(initialCredits);
+
+    // ── 获取最新活体积分 ──
+    const fetchLiveCredits = async () => {
+        if (!user.id) return;
+        try {
+            // 注意：这里需要能在前端用的 supabase-js 客户端
+            // 我们通过一个专门的 API 路由来抓取，避免把 RLS 或 token 暴露
+            const res = await fetch("/api/user/credits");
+            if (res.ok) {
+                const data = await res.json();
+                if (typeof data.credits === "number") {
+                    setLiveCredits(data.credits);
+                }
+            }
+        } catch (e) {
+            console.error("Failed to fetch live credits", e);
+        }
+    };
+
+    useEffect(() => {
+        fetchLiveCredits();
+        // 当用户切换回当前 Tab 时自动刷新（非常适合 Webhook 异步扣费场景）
+        window.addEventListener("focus", fetchLiveCredits);
+        return () => window.removeEventListener("focus", fetchLiveCredits);
+    }, [user.id]);
+
+    const credits = liveCredits;
 
     return (
         <div className="min-h-screen bg-[#0a0f1e] bg-grid">

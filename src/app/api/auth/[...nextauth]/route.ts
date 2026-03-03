@@ -10,7 +10,7 @@ export const dynamic = "force-dynamic";
 
 /* ─── NextAuth 核心配置 ──────────────────────────────────────────────── */
 
-const handler = NextAuth({
+export const handler = NextAuth({
     /* 配置 GitHub OAuth Provider */
     providers: [
         GithubProvider({
@@ -67,6 +67,7 @@ const handler = NextAuth({
         async session({ session, token }) {
             if (session.user) {
                 session.user.id = token.sub ?? "";
+                session.user.githubId = token.githubId as string | undefined;
                 // rawToken 仅在首次登录后的第一个 session 请求中存在
                 // 展示给用户后，客户端应清理掉（不持久化）
                 session.user.rawToken = token.rawToken as string | undefined;
