@@ -100,7 +100,7 @@ echo -e "✅ Integration tools generated"
 # 最后的交互逻辑：彻底修复之前的语法错误
 echo -e "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 printf "❓ Do you want to verify the sync now? (y/n): "
-read -r choice
+read -r choice < /dev/tty
 
 if [[ "$choice" =~ ^[Yy]$ ]]; then
     echo -e "🚀 Testing synchronization..."
