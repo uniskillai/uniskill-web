@@ -29,7 +29,18 @@ except ImportError:
 
 def find_entry_point():
     """
-    1. Define common entry filenames for Agent projects
+    1. Check if an entry point was provided as a command-line argument
+    首先检查是否通过命令行参数指定了入口点
+    """
+    if len(sys.argv) > 1:
+        arg_file = sys.argv[1]
+        if os.path.exists(arg_file) and arg_file.endswith(".py"):
+            return arg_file
+        else:
+            print(f"⚠️  Manual entry point '{arg_file}' not found or invalid. Falling back to auto-discovery...")
+
+    """
+    2. Define common entry filenames for Agent projects
     定义 Agent 项目常见的入口文件名，按常用度优先级排序
     """
     candidates = ["main.py", "app.py", "run.py", "bot.py", "agent.py", "openclaw_main.py"]
