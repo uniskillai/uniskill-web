@@ -12,7 +12,7 @@ export const siteConfig = {
     links: {
         // Current site origin (handles local dev and production)
         // 当前站点的根地址（自动处理本地开发与生产环境）
-        url: process.env.NEXT_PUBLIC_SITE_URL || "https://uniskill.ai",
+        url: process.env.NEXT_PUBLIC_SITE_URL || "https://www.uniskill.ai",
 
         // UniSkill Gateway API address
         // UniSkill 网关 API 地址
