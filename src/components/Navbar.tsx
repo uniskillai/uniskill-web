@@ -59,7 +59,7 @@ export default function Navbar() {
                     {/* 品牌文字 */}
                     <span className="text-lg font-bold tracking-tight">
                         <span className="text-white">UniSkill</span>
-                        <span className="gradient-text">.io</span>
+                        <span className="gradient-text">.ai</span>
                     </span>
                 </motion.a>
 
