@@ -48,7 +48,7 @@ export default function HeroSection() {
                         <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-500" />
                     </span>
                     <span className="text-xs font-semibold text-blue-400 tracking-widest uppercase">
-                        Managed API Gateway for AI Agents
+                        The universal skill layer for AI Agents
                     </span>
                 </motion.div>
 
@@ -103,7 +103,10 @@ export default function HeroSection() {
                     </motion.button>
 
                     {/* 次级 CTA：View Docs */}
-                    <motion.button
+                    <motion.a
+                        href="https://docs.uniskill.ai"
+                        target="_blank"
+                        rel="noopener noreferrer"
                         whileHover={{ scale: 1.04, y: -2 }}
                         whileTap={{ scale: 0.97 }}
                         className="btn-outline px-8 py-3.5 text-base flex items-center gap-2"
@@ -113,7 +116,7 @@ export default function HeroSection() {
                             <polyline points="14,2 14,8 20,8" />
                         </svg>
                         <span>View Docs</span>
-                    </motion.button>
+                    </motion.a>
                 </motion.div>
 
                 {/* ─── API Token 展示卡片 ─── */}

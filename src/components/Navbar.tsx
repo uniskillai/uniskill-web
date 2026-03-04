@@ -59,7 +59,6 @@ export default function Navbar() {
                     {/* 品牌文字 */}
                     <span className="text-lg font-bold tracking-tight">
                         <span className="text-white">UniSkill</span>
-                        <span className="gradient-text">.ai</span>
                     </span>
                 </motion.a>
 
@@ -103,7 +102,7 @@ export default function Navbar() {
 
                     {/* Pricing 链接 */}
                     <a
-                        href="/pricing"
+                        href="/#pricing"
                         className="px-3 py-1.5 rounded-lg text-sm font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/40 transition-all"
                     >
                         Pricing

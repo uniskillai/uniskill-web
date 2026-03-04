@@ -53,7 +53,7 @@ export default function Footer() {
                                 </svg>
                             </div>
                             <span className="font-bold text-white">
-                                UniSkill<span className="gradient-text">.io</span>
+                                UniSkill
                             </span>
                         </div>
                         <p className="text-slate-500 text-sm leading-relaxed max-w-[200px]">
@@ -86,7 +86,7 @@ export default function Footer() {
                 {/* ─── 底部：版权信息与社交链接 ─── */}
                 <div className="pt-8 border-t border-white/5 flex flex-col md:flex-row items-center justify-between gap-4">
                     <p className="text-slate-600 text-sm">
-                        © {currentYear} UniSkill.io — All rights reserved.
+                        © {currentYear} UniSkill — All rights reserved.
                     </p>
 
                     {/* 社交媒体图标 */}
