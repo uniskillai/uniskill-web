@@ -30,3 +30,38 @@ export const siteConfig = {
 export const getCallbackUrl = (provider: string) => {
     return `${siteConfig.url}/api/auth/callback/${provider}`;
 };
+
+export const footerConfig = {
+    // Column 1: The Product (High-level entry points)
+    // 第一列：产品（高层级入口）
+    product: [
+        {
+            label: "Skill Catalog",
+            // Logic: Link to a unified page listing all Search, Scrape, and Social skills
+            // 逻辑：链接至统一页面，展示所有搜索、抓取和社交技能
+            href: "/skills"
+        },
+        { label: "Pricing", href: "/#pricing" },
+        { label: "Changelog", href: "/docs/changelog" },
+    ],
+
+    // Column 2: Developers (Technical support and health)
+    // 第二列：开发者（技术支持与健康度）
+    resources: [
+        { label: "Documentation", href: "https://docs.uniskill.ai" },
+        { label: "API Reference", href: "https://docs.uniskill.ai/api-reference" },
+        {
+            label: "System Status",
+            // Logic: External status page to build developer trust
+            // 逻辑：外部状态页，用于建立开发者信任
+            href: "https://status.uniskill.ai"
+        },
+    ],
+
+    // Column 3: Company (The basics)
+    // 第三列：公司（基础信息）
+    legal: [
+        { label: "Privacy", href: "/privacy" },
+        { label: "Terms", href: "/terms" },
+    ],
+};

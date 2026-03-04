@@ -1,4 +1,4 @@
-"use client";
+import { footerConfig } from "@/config/site";
 
 /* ─── Footer 组件：页脚导航与版权声明 ──────────────────────────────────
    设计简洁，与整体暗色风格保持一致
@@ -6,34 +6,19 @@
 export default function Footer() {
     const currentYear = new Date().getFullYear();
 
-    /* 页脚链接分组配置 */
+    /* 页脚链接分组配置 - 从 siteConfig 映射 */
     const footerLinks = [
         {
             group: "Product",
-            links: [
-                { label: "Features", href: "#" },
-                { label: "Pricing", href: "/#pricing" },
-                { label: "Changelog", href: "#" },
-                { label: "Roadmap", href: "#" },
-            ],
+            links: footerConfig.product,
         },
         {
             group: "Developers",
-            links: [
-                { label: "Documentation", href: "https://docs.uniskill.ai" },
-                { label: "API Reference", href: "#" },
-                { label: "SDKs", href: "#" },
-                { label: "Status", href: "#" },
-            ],
+            links: footerConfig.resources,
         },
         {
-            group: "Company",
-            links: [
-                { label: "About", href: "#" },
-                { label: "Blog", href: "#" },
-                { label: "Privacy", href: "#" },
-                { label: "Terms", href: "#" },
-            ],
+            group: "Legal",
+            links: footerConfig.legal,
         },
     ];
 
