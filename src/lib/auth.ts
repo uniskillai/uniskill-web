@@ -1,6 +1,6 @@
 // src/lib/auth.ts
 // Core authentication business logic for UniSkill
-// UniSkill 核心认证业务逻辑：首次登录自动生成 Token 并同步到 Supabase & Cloudflare KV
+// UniSkill 核心认证业务逻辑：首次登录自动生成 API Key 并同步到 Supabase & Cloudflare KV
 
 import { supabase } from "@/lib/supabase";
 import crypto from "crypto";
@@ -20,14 +20,14 @@ export interface UserProfile {
 /* ─── 首次注册返回类型 ───────────────────────────────────────────────── */
 export interface RegistrationResult {
     profile: UserProfile;
-    rawToken?: string; // 仅首次注册时返回，之后不可再查
+    rawKey?: string; // 仅首次注册时返回，之后不可再查
 }
 
 /* ─── handleUserRegistration：处理用户首次登录 ─────────────────────────
    流程：
    1. 查询 Supabase 检查用户是否已存在
-   2. 若已存在 → 直接返回现有 profile（不含 rawToken）
-   3. 若新用户 → 生成 Token → SHA-256 哈希 → 存 Supabase → 同步 Cloudflare KV
+   2. 若已存在 → 直接返回现有 profile（不含 rawKey）
+   3. 若新用户 → 生成 API Key → SHA-256 哈希 → 存 Supabase → 同步 Cloudflare KV
    ─────────────────────────────────────────────────────────────────────── */
 export async function handleUserRegistration(
     githubProfile: {
@@ -51,7 +51,7 @@ export async function handleUserRegistration(
         throw new Error(`Database query failed: ${fetchError.message}`);
     }
 
-    // 用户已存在，直接返回（不重新生成 Token）
+    // 用户已存在，直接返回（不重新生成 Key）
     if (existingUser) {
         console.log("[auth] User already exists in DB:", existingUser.github_id);
         return { profile: existingUser as UserProfile };
@@ -59,10 +59,10 @@ export async function handleUserRegistration(
 
     console.log("[auth] New user detected, creating profile for:", githubId);
 
-    // 1. Generate the raw token and its unique hash ONCE
-    // 仅生成一次原始 Token 及其唯一的哈希值
-    const rawToken = `us-${crypto.randomUUID()}`;
-    const tokenHash = crypto.createHash("sha256").update(rawToken).digest("hex");
+    // 1. Generate the raw API key and its unique hash ONCE
+    // 仅生成一次原始 API Key 及其唯一的哈希值
+    const rawKey = `us-${crypto.randomUUID()}`;
+    const tokenHash = crypto.createHash("sha256").update(rawKey).digest("hex");
 
     // 2. Insert into Supabase
     // 存入 Supabase
@@ -116,8 +116,8 @@ export async function handleUserRegistration(
                     "Authorization": `Bearer ${process.env.ADMIN_KEY}`,
                     "Content-Type": "application/json",
                 },
-                // CRITICAL: Must use the same 'tokenHash' variable here
-                // 关键：此处必须使用同一个 'tokenHash' 变量
+                // CRITICAL: Must use the same 'keyHash' identifier here
+                // 关键：此处必须使用同一个 'tokenHash' 变量 (数据库列名仍为 token_hash)
                 body: JSON.stringify({ hash: tokenHash, credits: 500 }),
             });
 
@@ -134,9 +134,9 @@ export async function handleUserRegistration(
         }
     }
 
-    // ─── Step 6: 返回结果，rawToken 仅此一次返回给前端展示 ───────────
+    // ─── Step 6: 返回结果，rawKey 仅此一次返回给前端展示 ───────────
     return {
         profile: newProfile as UserProfile,
-        rawToken, // ⚠️ 不存库，用户需立即复制保存
+        rawKey, // ⚠️ 不存库，用户需立即复制保存
     };
 }

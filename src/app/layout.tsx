@@ -14,7 +14,7 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: "UniSkill — One Key. Infinite Skills. Built for Agents.",
   description:
-    "The managed API gateway for AI agents. Stop managing API keys, start building intelligence. Access Search, Scrape, Social and more with a single unified token.",
+    "The managed API gateway for AI agents. Stop managing API keys, start building intelligence. Access Search, Scrape, Social and more with a single unified key.",
   keywords: ["AI gateway", "AI agents", "API gateway", "LLM tools", "agent skills"],
   openGraph: {
     title: "UniSkill — Managed API Gateway for AI Agents",

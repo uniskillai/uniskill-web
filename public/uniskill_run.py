@@ -12,10 +12,10 @@ import importlib.util
 if os.path.exists(".env"):
     with open(".env", "r") as f:
         for line in f:
-            if line.startswith("UNISKILL_API_KEY="):
+            if line.startswith("UNISKILL_KEY="):
                 key = line.strip().split("=", 1)[1]
                 # 去除可能的引号
-                os.environ["UNISKILL_API_KEY"] = key.strip("\"'")
+                os.environ["UNISKILL_KEY"] = key.strip("\"'")
                 break
 
 try:
@@ -23,7 +23,7 @@ try:
 except ImportError:
     print("\n❌ [UniSkill Error] utils/uniskill_loader.py not found!", file=sys.stderr)
     print("Please run the setup script first:", file=sys.stderr)
-    print("curl -s https://uniskill-web.vercel.app/setup-skills.sh | bash -s -- <YOUR_TOKEN>\n", file=sys.stderr)
+    print("curl -s https://uniskill-web.vercel.app/setup-skills.sh | bash -s -- <YOUR_KEY>\n", file=sys.stderr)
     sys.exit(1)
 
 
@@ -53,9 +53,9 @@ def find_entry_point():
 def start_with_uniskill():
     print("🚀 UniSkill: Initializing Auto-discovery...")
     
-    # 检查 Token
-    if "UNISKILL_API_KEY" not in os.environ:
-        print("\n❌ [UniSkill Error] UNISKILL_API_KEY not found in environment or .env file!", file=sys.stderr)
+    # 检查 Key
+    if "UNISKILL_KEY" not in os.environ:
+        print("\n❌ [UniSkill Error] UNISKILL_KEY not found in environment or .env file!", file=sys.stderr)
         sys.exit(1)
 
     # 2. Sync skills from cloud first

@@ -16,7 +16,7 @@ const fadeUp = {
 };
 
 /* ─── HeroSection 组件：着陆页主视觉区域 ──────────────────────────────
-   包含：标题、副标题、CTA 按钮、API Token 展示卡片和背景光效
+   包含：标题、副标题、CTA 按钮、API Key 展示卡片和背景光效
    ─────────────────────────────────────────────────────────────────────── */
 export default function HeroSection() {
     return (
@@ -124,7 +124,7 @@ export default function HeroSection() {
                         </motion.div>
                     </div>
 
-                    {/* 右侧：API Token 展示卡片 */}
+                    {/* 右侧：API Key 展示卡片 */}
                     <motion.div
                         variants={fadeUp}
                         initial="hidden"

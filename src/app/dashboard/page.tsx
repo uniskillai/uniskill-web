@@ -1,8 +1,8 @@
 "use client";
 
 // src/app/dashboard/page.tsx
-// UniSkill.io Dashboard — 用户登录后的主控制台
-// 展示：UniSkill Token（首次登录仅此一次）、剩余配额、快速接入代码
+// UniSkill Dashboard — 用户登录后的主控制台
+// 展示：UniSkill Key（首次登录仅此一次）、剩余配额、快速接入代码
 
 import { useSession, signIn, signOut } from "next-auth/react";
 import { useState, useEffect } from "react";
@@ -12,22 +12,22 @@ import IntegrationCard from "@/components/Dashboard/IntegrationCard";
 import QuickActivity from "@/components/Dashboard/QuickActivity";
 import DashboardNavbar from "@/components/Dashboard/DashboardNavbar";
 
-/* ─── Token 展示卡片组件 ────────────────────────────────────────────────
-   首次登录时显示原始 Token，用户必须立即复制保存，刷新后不可再查
+/* ─── Key 展示卡片组件 ────────────────────────────────────────────────
+   首次登录时显示原始 Key，用户必须立即复制保存，刷新后不可再查
    ─────────────────────────────────────────────────────────────────────── */
-function TokenCard({ rawToken }: { rawToken?: string }) {
+function KeyCard({ rawKey }: { rawKey?: string }) {
     const [copied, setCopied] = useState(false);
     const [revealed, setRevealed] = useState(false);
 
-    /* 复制 Token 到剪贴板 */
+    /* 复制 Key 到剪贴板 */
     const handleCopy = async (text: string) => {
         await navigator.clipboard.writeText(text);
         setCopied(true);
         setTimeout(() => setCopied(false), 2000);
     };
 
-    if (!rawToken) {
-        /* 已有 Token（非首次登录） */
+    if (!rawKey) {
+        /* 已有 Key（非首次登录） */
         return (
             <div className="glass-card p-6 border border-slate-700/50">
                 <div className="flex items-center gap-3 mb-4">
@@ -38,8 +38,8 @@ function TokenCard({ rawToken }: { rawToken?: string }) {
                         </svg>
                     </div>
                     <div>
-                        <p className="text-sm font-semibold text-slate-300">Your API Token</p>
-                        <p className="text-xs text-slate-500">Token is hidden for security — it was shown once at registration</p>
+                        <p className="text-sm font-semibold text-slate-300">Your API Key</p>
+                        <p className="text-xs text-slate-500">Key is hidden for security — it was shown once at registration</p>
                     </div>
                 </div>
                 <div className="code-block flex items-center justify-between gap-4">
@@ -50,7 +50,7 @@ function TokenCard({ rawToken }: { rawToken?: string }) {
         );
     }
 
-    /* 首次登录：展示原始 Token，提示立即复制 */
+    /* 首次登录：展示原始 Key，提示立即复制 */
     return (
         <motion.div
             initial={{ opacity: 0, scale: 0.97 }}
@@ -67,23 +67,23 @@ function TokenCard({ rawToken }: { rawToken?: string }) {
                     <line x1="12" y1="9" x2="12" y2="13" /><line x1="12" y1="17" x2="12.01" y2="17" />
                 </svg>
                 <span className="text-xs text-yellow-400 font-semibold">
-                    This token is shown ONCE — copy it now and store it securely
+                    This key is shown ONCE — copy it now and store it securely
                 </span>
             </div>
 
-            <p className="text-sm font-semibold text-slate-300 mb-3">Your API Token</p>
+            <p className="text-sm font-semibold text-slate-300 mb-3">Your API Key</p>
 
-            {/* Token 显示区域 */}
+            {/* Key 显示区域 */}
             <div className="code-block flex items-center justify-between gap-4 mb-3">
                 <span className={`text-green-400 font-mono text-sm ${!revealed ? "blur-sm select-none" : ""} transition-all`}>
-                    {rawToken}
+                    {rawKey}
                 </span>
                 <div className="flex items-center gap-2 shrink-0">
                     {/* 显示/隐藏 Toggle */}
                     <button
                         onClick={() => setRevealed(!revealed)}
                         className="p-2 rounded-md text-slate-500 hover:text-slate-300 hover:bg-slate-700/50 transition-all"
-                        title={revealed ? "Hide token" : "Reveal token"}
+                        title={revealed ? "Hide key" : "Reveal key"}
                     >
                         {revealed ? (
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -101,7 +101,7 @@ function TokenCard({ rawToken }: { rawToken?: string }) {
                     {/* 复制按钮 */}
                     <motion.button
                         whileTap={{ scale: 0.95 }}
-                        onClick={() => handleCopy(rawToken)}
+                        onClick={() => handleCopy(rawKey)}
                         className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold transition-all ${copied
                             ? "bg-green-500/20 text-green-400 border border-green-500/30"
                             : "bg-blue-500/15 text-blue-400 border border-blue-500/30 hover:bg-blue-500/25"
@@ -110,7 +110,7 @@ function TokenCard({ rawToken }: { rawToken?: string }) {
                         {copied ? (
                             <><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="20,6 9,17 4,12" /></svg> Copied!</>
                         ) : (
-                            <><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="9" y="9" width="13" height="13" rx="2" /><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" /></svg> Copy Token</>
+                            <><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="9" y="9" width="13" height="13" rx="2" /><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" /></svg> Copy Key</>
                         )}
                     </motion.button>
                 </div>
@@ -120,8 +120,8 @@ function TokenCard({ rawToken }: { rawToken?: string }) {
 }
 
 /* ─── 配额进度条组件 ─────────────────────────────────────────────────── */
-function CreditsBar({ credits, total = 50 }: { credits?: number; total?: number }) {
-    /* credits 未确定时显示骨架，避免 session 加载前误显示默认值 50 */
+function CreditsBar({ credits, total = 500 }: { credits?: number; total?: number }) {
+    /* credits 未确定时显示骨架，避免 session 加载前误显示默认值 500 */
     if (credits === undefined) {
         return (
             <div className="glass-card p-6 border border-slate-700/50">
@@ -190,7 +190,7 @@ function CreditsBar({ credits, total = 50 }: { credits?: number; total?: number 
 export default function DashboardPage() {
     const { data: session, status } = useSession();
 
-    // liveCredits 初始化为 undefined，避免 session 尚未加载时错误 fallback 到 50
+    // liveCredits 初始化为 undefined，避免 session 尚未加载时错误 fallback 到 500
     const [liveCredits, setLiveCredits] = useState<number | undefined>(undefined);
 
     const fetchLiveCredits = async () => {
@@ -211,7 +211,7 @@ export default function DashboardPage() {
     useEffect(() => {
         if (status !== "authenticated") return;
         // 先用 session JWT 缓存展示（少有延迟，避免骨架闪烁），西同时发起真实值请求
-        setLiveCredits(session.user.credits ?? 50);
+        setLiveCredits(session.user.credits ?? 500);
         fetchLiveCredits();
         window.addEventListener("focus", fetchLiveCredits);
         return () => window.removeEventListener("focus", fetchLiveCredits);
@@ -233,7 +233,7 @@ export default function DashboardPage() {
                         </svg>
                     </div>
                     <h1 className="text-xl font-bold text-white mb-2">Sign in to UniSkill</h1>
-                    <p className="text-slate-400 text-sm mb-8">Access your API token and usage dashboard</p>
+                    <p className="text-slate-400 text-sm mb-8">Access your API key and usage dashboard</p>
                     <motion.button
                         whileHover={{ scale: 1.03 }}
                         whileTap={{ scale: 0.97 }}
@@ -265,13 +265,13 @@ export default function DashboardPage() {
     /* 已登录：渲染 Dashboard */
     /* 已登录：渲染 Dashboard */
     const user = session?.user;
-    const rawToken = user?.rawToken;
+    const rawKey = user?.rawKey;
     const credits = liveCredits;
 
     return (
         <div className="min-h-screen bg-[#0a0f1e] bg-grid">
             {/* ─── 顶部 Navbar：使用共享 DashboardNavbar 组件，传入实时 credits ─── */}
-            <DashboardNavbar credits={credits} totalCredits={50} />
+            <DashboardNavbar credits={credits} totalCredits={500} />
 
             {/* ─── Dashboard 主内容 ─── */}
             <main className="max-w-5xl mx-auto px-6 py-10">
@@ -290,7 +290,7 @@ export default function DashboardPage() {
 
                 {/* 首次登录一次性 Toast 提醒 */}
                 <AnimatePresence>
-                    {rawToken && (
+                    {rawKey && (
                         <motion.div
                             initial={{ opacity: 0, y: -10 }}
                             animate={{ opacity: 1, y: 0 }}
@@ -300,7 +300,7 @@ export default function DashboardPage() {
                             <span className="text-green-400 text-lg">🎉</span>
                             <div>
                                 <p className="text-sm font-semibold text-green-400">Account created successfully!</p>
-                                <p className="text-xs text-slate-400">Your API token has been provisioned with 50 free credits</p>
+                                <p className="text-xs text-slate-400">Your API key has been provisioned with 500 free credits</p>
                             </div>
                         </motion.div>
                     )}
@@ -308,14 +308,14 @@ export default function DashboardPage() {
 
                 {/* ─── 卡片网格 ─── */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 items-stretch">
-                    {/* Token 卡片（跨两列） */}
+                    {/* Key 卡片（跨两列） */}
                     <motion.div
                         className="lg:col-span-2"
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.1, duration: 0.5 }}
+                        transition={{ delay: 1.1, duration: 0.5 }}
                     >
-                        <TokenCard rawToken={rawToken} />
+                        <KeyCard rawKey={rawKey} />
                     </motion.div>
 
                     {/* ── 左列：Credits 卡片 + Recent Activity（flex-1 填满剩余高度）── */}
@@ -327,7 +327,7 @@ export default function DashboardPage() {
                         transition={{ delay: 0.2, duration: 0.5 }}
                     >
                         {/* 配额卡片 */}
-                        <CreditsBar credits={credits} total={50} />
+                        <CreditsBar credits={credits} total={500} />
                         {/* Recent Activity：flex-1 让它填满左列剩余高度，与右列等高 */}
                         <div className="flex-1">
                             <QuickActivity />
@@ -341,7 +341,7 @@ export default function DashboardPage() {
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.3, duration: 0.5 }}
                     >
-                        <IntegrationCard token={rawToken} />
+                        <IntegrationCard rawKey={rawKey} />
                     </motion.div>
                 </div>
 

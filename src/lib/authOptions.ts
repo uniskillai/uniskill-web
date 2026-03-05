@@ -25,7 +25,7 @@ export const authOptions: NextAuthOptions = {
                     name: user.name,
                     image: user.image,
                 });
-                (user as any).rawToken = result.rawToken;
+                (user as any).rawKey = result.rawKey;
                 (user as any).credits = result.profile.credits;
                 (user as any).githubId = (profile?.id ?? "").toString();
                 return true;
@@ -37,7 +37,7 @@ export const authOptions: NextAuthOptions = {
         async jwt({ token, user }) {
             if (user) {
                 token.githubId = (user as any).githubId;
-                token.rawToken = (user as any).rawToken;
+                token.rawKey = (user as any).rawKey;
                 token.credits = (user as any).credits;
             }
             return token;
@@ -46,7 +46,7 @@ export const authOptions: NextAuthOptions = {
             if (session.user) {
                 session.user.id = token.sub ?? "";
                 session.user.githubId = token.githubId as string | undefined;
-                session.user.rawToken = token.rawToken as string | undefined;
+                session.user.rawKey = token.rawKey as string | undefined;
                 session.user.credits = token.credits as number | undefined;
             }
             return session;

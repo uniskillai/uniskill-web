@@ -7,18 +7,18 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 
 interface QuickStartProps {
-    // 用户的原始 API Token（仅首次登录时由 session 提供；后续为 undefined）
-    rawApiToken?: string;
+    // 用户的原始 API Key（仅首次登录时由 session 提供；后续为 undefined）
+    rawKey?: string;
 }
 
-export default function QuickStart({ rawApiToken }: QuickStartProps) {
+export default function QuickStart({ rawKey }: QuickStartProps) {
     const [copied, setCopied] = useState(false);
 
-    // 若 token 可用则注入命令行，否则展示占位符
-    const displayToken = rawApiToken ?? "your-token-here";
+    // 若 key 可用则注入命令行，否则展示占位符
+    const displayKey = rawKey ?? "your-key-here";
 
     // 一键安装命令：curl 下载 install.sh 并通过 bash 自动配置 .env
-    const installCommand = `curl -s https://uniskill.ai/install.sh | bash -s -- ${displayToken}`;
+    const installCommand = `curl -s https://uniskill.ai/install.sh | bash -s -- ${displayKey}`;
 
     const handleCopy = async () => {
         await navigator.clipboard.writeText(installCommand);
@@ -86,9 +86,9 @@ export default function QuickStart({ rawApiToken }: QuickStartProps) {
                     <span className="text-slate-400"> | </span>
                     <span className="text-blue-400">bash</span>
                     <span className="text-slate-400"> -s -- </span>
-                    {/* 注入 token，若无 token 则用暗灰色显示占位符 */}
-                    <span className={rawApiToken ? "text-cyan-400" : "text-slate-500 italic"}>
-                        {displayToken}
+                    {/* 注入 key，若无 key 则用暗灰色显示占位符 */}
+                    <span className={rawKey ? "text-cyan-400" : "text-slate-500 italic"}>
+                        {displayKey}
                     </span>
                 </span>
             </div>
@@ -97,9 +97,9 @@ export default function QuickStart({ rawApiToken }: QuickStartProps) {
                 This script injects your{" "}
                 <code className="text-slate-500 bg-slate-800 px-1 rounded">API key</code>{" "}
                 and auto-syncs cloud skills into your OpenClaw project.
-                {!rawApiToken && (
+                {!rawKey && (
                     <span className="block mt-1 text-amber-600/70">
-                        ⚠ Your token is only shown once at registration — re-login to retrieve a new session if needed.
+                        ⚠ Your key is only shown once at registration — re-login to retrieve a new session if needed.
                     </span>
                 )}
             </p>

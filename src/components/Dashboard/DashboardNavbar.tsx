@@ -16,7 +16,7 @@ interface DashboardNavbarProps {
 }
 
 
-export default function DashboardNavbar({ credits, totalCredits = 50 }: DashboardNavbarProps) {
+export default function DashboardNavbar({ credits, totalCredits = 500 }: DashboardNavbarProps) {
     const { data: session } = useSession();
     const pathname = usePathname();
     const user = session?.user;

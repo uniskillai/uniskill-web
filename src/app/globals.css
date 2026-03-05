@@ -111,7 +111,7 @@ body {
   box-shadow: 0 0 40px rgba(139, 92, 246, 0.15), 0 0 80px rgba(139, 92, 246, 0.05);
 }
 
-/* ─── 代码块样式（用于 Token 示意展示）──────────────────────────────── */
+/* ─── 代码块样式（用于 Key 示意展示）──────────────────────────────── */
 .code-block {
   font-family: "JetBrains Mono", "Fira Code", "Cascadia Code", monospace;
   font-size: 0.85rem;

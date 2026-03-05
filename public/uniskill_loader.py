@@ -17,14 +17,14 @@ import urllib.error
 MANIFEST_URL = "https://uniskill-gateway.geekpro798.workers.dev/v1/skills"
 
 # 从环境变量读取 API Key，避免硬编码敏感信息
-API_KEY = os.environ.get("UNISKILL_API_KEY", "")
+API_KEY = os.environ.get("UNISKILL_KEY", "")
 
 
 def _fetch_manifest() -> dict:
     """从云端拉取技能清单 JSON，失败时抛出带有可读信息的异常。"""
     if not API_KEY:
         raise EnvironmentError(
-            "[UniSkill] UNISKILL_API_KEY is not set. "
+            "[UniSkill] UNISKILL_KEY is not set. "
             "Run setup-skills.sh first or export the variable manually."
         )
 

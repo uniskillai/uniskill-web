@@ -163,26 +163,26 @@ export default function SkillsPage() {
         // 只有认证通过后才请求 credits 接口
         if (status !== "authenticated") return;
         // 初始化时从 session 读取 credits 作为默认值
-        setLiveCredits(session?.user?.credits ?? 50);
+        setLiveCredits(session?.user?.credits ?? 500);
         fetchLiveCredits();
         window.addEventListener("focus", fetchLiveCredits);
         return () => window.removeEventListener("focus", fetchLiveCredits);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [status]);
 
-    /* ── Token 注入逻辑 ──────────────────────────────────────────────────────
-       已登录且拥有 rawToken（首次登录）→ 注入真实 token
-       已登录但 rawToken 不存在（非首次）→ 使用占位符（token 仅首次展示）
+    /* ── Key 注入逻辑 ──────────────────────────────────────────────────────
+       已登录且拥有 rawKey（首次登录）→ 注入真实 key
+       已登录但 rawKey 不存在（非首次）→ 使用占位符（API key 仅首次展示）
        未登录 → 使用占位符，并将复制按钮替换为 Sign in 按钮
        ─────────────────────────────────────────────────────────────────────── */
     const isLoggedIn = status === "authenticated";
-    const rawApiToken = session?.user?.rawToken;
-    // 已登录且有 rawToken 时显示真实 token，否则显示占位符
-    const displayToken = isLoggedIn && rawApiToken ? rawApiToken : "your_api_token";
-    const hasRealToken = isLoggedIn && !!rawApiToken;
+    const rawKey = session?.user?.rawKey;
+    // 已登录且有 rawKey 时显示真实 key，否则显示占位符
+    const displayKey = isLoggedIn && rawKey ? rawKey : "your_api_key";
+    const hasRealKey = isLoggedIn && !!rawKey;
 
     // 一键安装命令（Option B Tool Mode）
-    const installCommand = `curl -s https://uniskill.ai/setup-skills.sh | bash -s -- ${displayToken}`;
+    const installCommand = `curl -s https://uniskill.ai/setup-skills.sh | bash -s -- ${displayKey}`;
 
     const handleCopyInstall = async () => {
         await navigator.clipboard.writeText(installCommand);
@@ -196,7 +196,7 @@ export default function SkillsPage() {
     return (
         <div className="min-h-screen bg-[#0a0f1e] bg-grid">
             {/* ── Navbar：已登录时传入实时 credits，未登录时不传（不显示徽章） ── */}
-            <DashboardNavbar credits={liveCredits} totalCredits={50} />
+            <DashboardNavbar credits={liveCredits} totalCredits={500} />
 
             <main className="max-w-5xl mx-auto px-6 py-10">
 
@@ -247,7 +247,7 @@ export default function SkillsPage() {
                             </p>
                         </div>
 
-                        {/* 右侧按钮：已登录 → 复制命令；未登录 → Sign in to get Token */}
+                        {/* 右侧按钮：已登录 → 复制命令；未登录 → Sign in to get Key */}
                         {isLoading ? (
                             // Session 加载中：显示骨架按钮
                             <div className="w-40 h-8 rounded-lg bg-slate-700/50 animate-pulse shrink-0" />
@@ -279,7 +279,7 @@ export default function SkillsPage() {
                                 )}
                             </motion.button>
                         ) : (
-                            // 未登录：引导登录以获取真实 token
+                            // 未登录：引导登录以获取真实 key
                             <motion.button
                                 whileHover={{ scale: 1.03 }}
                                 whileTap={{ scale: 0.97 }}
@@ -289,12 +289,12 @@ export default function SkillsPage() {
                                 <svg width="12" height="12" fill="currentColor" viewBox="0 0 24 24">
                                     <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
                                 </svg>
-                                Sign in to get Token
+                                Sign in to get Key
                             </motion.button>
                         )}
                     </div>
 
-                    {/* 终端命令代码块 — 始终可见，guest 显示占位符，登录后显示真实 token */}
+                    {/* 终端命令代码块 — 始终可见，guest 显示占位符，登录后显示真实 key */}
                     <div className="code-block text-xs leading-relaxed font-mono flex items-start gap-2 overflow-x-auto">
                         <span className="text-slate-600 select-none shrink-0">$</span>
                         <span>
@@ -304,21 +304,21 @@ export default function SkillsPage() {
                             <span className="text-slate-400"> | </span>
                             <span className="text-blue-400">bash</span>
                             <span className="text-slate-400"> -s -- </span>
-                            {/* 根据登录状态与 rawToken 可用性，动态渲染 token 部分的颜色与内容 */}
-                            <span className={hasRealToken ? "text-cyan-400" : "text-slate-500 italic"}>
-                                {displayToken}
+                            {/* 根据登录状态与 rawKey 可用性，动态渲染 key 部分的颜色与内容 */}
+                            <span className={hasRealKey ? "text-cyan-400" : "text-slate-500 italic"}>
+                                {displayKey}
                             </span>
                         </span>
                     </div>
 
-                    {/* 占位符状态提示（仅未登录或 token 不可用时显示） */}
-                    {!hasRealToken && (
+                    {/* 占位符状态提示（仅未登录或 key 不可用时显示） */}
+                    {!hasRealKey && (
                         <p className="mt-3 text-xs text-slate-600">
                             {isLoggedIn
-                                // 已登录但 token 不在 session（非首次登录）
-                                ? "⚠ Your token is only shown once at first sign-in. Go to Dashboard Overview to review your account."
+                                // 已登录但 key 不在 session（非首次登录）
+                                ? "⚠ Your key is only shown once at first sign-in. Go to Dashboard Overview to review your account."
                                 // 未登录状态
-                                : "Sign in with GitHub to inject your real API token into this command."}
+                                : "Sign in with GitHub to inject your real API key into this command."}
                         </p>
                     )}
                 </motion.div>

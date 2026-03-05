@@ -8,18 +8,18 @@ import { Terminal, Copy, Check, ShieldCheck } from "lucide-react";
 import { useState } from "react";
 
 interface IntegrationCardProps {
-    // 用户的原始 API Token（仅首次登录由 session 提供；后续为 undefined）
-    token?: string;
+    // 用户的原始 API Key（仅首次登录由 session 提供；后续为 undefined）
+    rawKey?: string;
 }
 
-export default function IntegrationCard({ token }: IntegrationCardProps) {
+export default function IntegrationCard({ rawKey }: IntegrationCardProps) {
     const [copied, setCopied] = useState(false);
 
-    // 若 token 可用则注入命令行，否则展示占位符
-    const displayToken = token ?? "your-token-here";
+    // 若 rawKey 可用则注入命令行，否则展示占位符
+    const displayKey = rawKey ?? "your-key-here";
 
     // 更新后的脚本名称与参数，侧重于"能力注入"
-    const installCmd = `curl -fsSL https://uniskill-web.vercel.app/setup-skills.sh | bash -s -- ${displayToken}`;
+    const installCmd = `curl -fsSL https://uniskill-web.vercel.app/setup-skills.sh | bash -s -- ${displayKey}`;
 
     const handleCopy = () => {
         navigator.clipboard.writeText(installCmd);
@@ -60,7 +60,7 @@ export default function IntegrationCard({ token }: IntegrationCardProps) {
                 <div className="text-slate-500 mb-2 text-[10px] uppercase tracking-widest">
                     Execute in project root
                 </div>
-                {/* 命令行：token 有值时高亮展示，否则以斜体灰色显示占位符 */}
+                {/* 命令行：API Key 有值时高亮展示，否则以斜体灰色显示占位符 */}
                 <code className="break-all block">
                     <span className="text-slate-500">$ </span>
                     <span className="text-blue-400">curl</span>
@@ -69,8 +69,8 @@ export default function IntegrationCard({ token }: IntegrationCardProps) {
                     <span className="text-slate-400"> | </span>
                     <span className="text-blue-400">bash</span>
                     <span className="text-slate-400"> -s -- </span>
-                    <span className={token ? "text-indigo-300" : "text-slate-500 italic"}>
-                        {displayToken}
+                    <span className={rawKey ? "text-indigo-300" : "text-slate-500 italic"}>
+                        {displayKey}
                     </span>
                 </code>
             </div>
@@ -86,9 +86,9 @@ export default function IntegrationCard({ token }: IntegrationCardProps) {
                     <code className="text-indigo-400 bg-slate-800 px-1 rounded">API key</code>{" "}
                     and auto-syncs cloud skills into your OpenClaw project.
                     {/* 该脚本会自动配置环境变量并为 OpenClaw 同步云端技能 */}
-                    {!token && (
+                    {!rawKey && (
                         <span className="block mt-1 text-amber-600/70">
-                            ⚠ Your token is only shown once at registration — re-login to retrieve a new session if needed.
+                            ⚠ Your key is only shown once at registration — re-login to retrieve a new session if needed.
                         </span>
                     )}
                 </p>

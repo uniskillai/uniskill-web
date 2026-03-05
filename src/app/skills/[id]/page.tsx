@@ -262,23 +262,23 @@ export default function SkillDetailPage() {
     const params = useParams();
     const id = typeof params.id === "string" ? params.id : "";
 
-    // 从 session 获取登录状态与用户 Token，用于条件注入 curl 命令
+    // 从 session 获取登录状态与用户 API Key，用于条件注入 curl 命令
     const { data: session, status } = useSession();
 
     const skill = SKILL_DATA[id];
 
-    /* ── Token 注入逻辑 ──────────────────────────────────────────────────────
-       已登录且有 rawToken → 注入真实 token
-       未登录 / rawToken 不存在 → 显示占位符 <LOGIN_TO_VIEW_TOKEN>
+    /* ── Key 注入逻辑 ──────────────────────────────────────────────────────
+       已登录且有 rawKey → 注入真实 key
+       未登录 / rawKey 不存在 → 显示占位符 <LOGIN_TO_VIEW_KEY>
        ─────────────────────────────────────────────────────────────────────── */
     const isLoggedIn = status === "authenticated";
-    const rawApiToken = session?.user?.rawToken;
-    const displayToken = isLoggedIn && rawApiToken ? rawApiToken : "<LOGIN_TO_VIEW_TOKEN>";
-    const hasRealToken = isLoggedIn && !!rawApiToken;
+    const rawKey = session?.user?.rawKey;
+    const displayKey = isLoggedIn && rawKey ? rawKey : "<LOGIN_TO_VIEW_KEY>";
+    const hasRealKey = isLoggedIn && !!rawKey;
 
     // 集成 curl 命令：使用 api.uniskill.ai/v1/[id] 端点
     const curlCommand = `curl -X POST https://api.uniskill.ai/v1/${id} \\
-  -H "Authorization: Bearer ${displayToken}" \\
+  -H "Authorization: Bearer ${displayKey}" \\
   -H "Content-Type: application/json" \\
   -d '{"query": "example query"}'`;
 
@@ -513,7 +513,7 @@ export default function SkillDetailPage() {
                             <div className="flex items-center justify-between mb-3">
                                 <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Integration</p>
                                 {/* 根据登录状态显示复制按钮或登录 CTA */}
-                                {hasRealToken
+                                {hasRealKey
                                     ? <CopyButton text={curlCommand} label="Copy" />
                                     : null}
                             </div>
@@ -526,9 +526,9 @@ export default function SkillDetailPage() {
                                 {`\n  `}
                                 <span className="text-slate-400">-H </span>
                                 <span className="text-yellow-300">&quot;Authorization: Bearer </span>
-                                {/* 根据登录状态动态渲染 token 颜色：已登录真实 token 用 cyan，未登录用灰色斜体 */}
-                                <span className={hasRealToken ? "text-cyan-400" : "text-slate-500 italic"}>
-                                    {displayToken}
+                                {/* 根据登录状态动态渲染 key 颜色：已登录真实 key 用 cyan，未登录用灰色斜体 */}
+                                <span className={hasRealKey ? "text-cyan-400" : "text-slate-500 italic"}>
+                                    {displayKey}
                                 </span>
                                 <span className="text-yellow-300">&quot;</span>
                                 {`\n  `}
@@ -539,7 +539,7 @@ export default function SkillDetailPage() {
                                 <span className="text-orange-300">&apos;&#123;&quot;query&quot;: &quot;example&quot;&#125;&apos;</span>
                             </div>
 
-                            {/* 未登录 CTA：引导用户登录以获取真实 token */}
+                            {/* 未登录 CTA：引导用户登录以获取真实 API Key */}
                             {!isLoggedIn && status !== "loading" && (
                                 <motion.button
                                     whileHover={{ scale: 1.02 }}
@@ -554,10 +554,10 @@ export default function SkillDetailPage() {
                                 </motion.button>
                             )}
 
-                            {/* 已登录但 token 非首次登录不可用时的提示 */}
-                            {isLoggedIn && !hasRealToken && (
+                            {/* 已登录但 key 非首次登录不可用时的提示 */}
+                            {isLoggedIn && !hasRealKey && (
                                 <p className="mt-3 text-xs text-slate-600">
-                                    ⚠ Token shown once at first sign-in. Find it in your Dashboard.
+                                    ⚠ Key shown once at first sign-in. Find it in your Dashboard.
                                 </p>
                             )}
                         </motion.div>
