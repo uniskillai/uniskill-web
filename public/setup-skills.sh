@@ -32,7 +32,7 @@ fi
 echo -n "Verifying API Key... "
 # Use a temporary file to capture the HTTP status code
 # 使用临时文件捕获 HTTP 状态码，并保留 curl 的退出码
-HTTP_STATUS=$(curl -s -w "%{http_code}" -o /dev/null -X POST \
+HTTP_STATUS=$(curl -s -L -w "%{http_code}" -o /dev/null -X POST \
     -H "Content-Type: application/json" \
     -d "{\"key\":\"$API_KEY\"}" \
     https://uniskill.ai/api/v1/verify)
