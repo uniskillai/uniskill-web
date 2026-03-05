@@ -1,37 +1,31 @@
 #!/bin/bash
 
-# Logic: Define colors for better terminal output
-# 逻辑：定义颜色变量，优化终端输出显示
+# ============================================================
+# UniSkill: The universal skill layer for AI agents.
+# Logic: Professional environment initializer with auto-healing
+# ============================================================
+
+# Logic: Define colors for international standard output
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 BLUE='\033[0;34m'
-NC='\033[0m' # No Color
+NC='\033[0m'
 
 echo -e "${BLUE}UniSkill: The universal skill layer for AI agents.${NC}"
 echo "-------------------------------------------------------"
 
-# Logic: Check if the API Key is provided as an argument
-# 逻辑：检查是否通过参数传入了 API Key
+# Logic: Validate the API Key argument
+# 逻辑：验证是否传入了 API Key 且格式符合 'us-' 开头
 API_KEY=$1
-
-if [ -z "$API_KEY" ]; then
-    echo -e "${RED}Error: No API Key provided.${NC}"
-    echo "Usage: curl -fsSL https://uniskill.ai/setup-skills.sh | bash -s -- <your_api_key>"
+if [ -z "$API_KEY" ] || [[ ! $API_KEY =~ ^us- ]]; then
+    echo -e "${RED}Error: Invalid or missing API Key.${NC}"
+    echo "Usage: curl -fsSL https://uniskill.ai/setup-skills.sh | bash -s -- <us-your-key>"
     exit 1
 fi
 
-# Logic: Validate key format (should start with 'us-')
-# 逻辑：校验密钥格式，必须以 'us-' 开头
-if [[ ! $API_KEY =~ ^us- ]]; then
-    echo -e "${RED}Error: Invalid Key format. It should start with 'us-'.${NC}"
-    exit 1
-fi
-
-# Logic: Online verification against UniSkill API
-# 逻辑：联机验证 API Key 是否真实有效
+# ── Step 1: Online Verification ───────────────────────────
+# 逻辑：联机验证 API Key 的真实性，并捕获网络错误码
 echo -n "Verifying API Key... "
-# Use a temporary file to capture the HTTP status code
-# 使用临时文件捕获 HTTP 状态码，并保留 curl 的退出码
 HTTP_STATUS=$(curl -s -L -w "%{http_code}" -o /dev/null -X POST \
     -H "Content-Type: application/json" \
     -d "{\"key\":\"$API_KEY\"}" \
@@ -39,61 +33,51 @@ HTTP_STATUS=$(curl -s -L -w "%{http_code}" -o /dev/null -X POST \
 CURL_RET=$?
 
 if [ $CURL_RET -ne 0 ]; then
-    echo -e "${RED}NETWORK ERROR${NC}"
-    echo -e "${RED}❌ Error: Could not reach UniSkill servers (curl exit code: $CURL_RET).${NC}"
-    case $CURL_RET in
-        6)  echo "Reason: DNS resolution failed. Please check your domain settings or ISP." ;;
-        7)  echo "Reason: Connection refused. The service might be temporarily down." ;;
-        28) echo "Reason: Connection timed out. Please check your firewall or proxy." ;;
-        35) echo "Reason: SSL/TLS handshake failed. Check your local clock or SSL environment." ;;
-        60) echo "Reason: Peer certificate cannot be authenticated with known CA certificates." ;;
-        *)  echo "Reason: General network failure." ;;
-    esac
-    echo -e "Try manually visiting ${BLUE}https://uniskill.ai${NC} to check accessibility."
+    echo -e "${RED}NETWORK ERROR (Code: $CURL_RET)${NC}"
     exit 1
-fi
-
-if [ "$HTTP_STATUS" != "200" ]; then
-    echo -e "${RED}FAILED${NC}"
-    echo -e "${RED}❌ Error: Invalid API Key. The provided key ${BLUE}${API_KEY:0:7}...${RED} is not authorized. Please check your credentials at ${BLUE}https://uniskill.ai/dashboard${NC}."
+elif [ "$HTTP_STATUS" != "200" ]; then
+    echo -e "${RED}FAILED (Status: $HTTP_STATUS)${NC}"
     exit 1
 fi
 echo -e "${GREEN}VALIDATED${NC}"
 
-# Logic: Detect the current user's shell profile
-# 逻辑：检测当前用户的 Shell 配置文件（.zshrc 或 .bashrc）
-if [ -n "$ZSH_VERSION" ]; then
+# ── Step 2: Intelligent Shell Detection ────────────────────
+# 逻辑：识别用户主 Shell 配置文件，优先适配 macOS 的 zsh
+if [ -f "$HOME/.zshrc" ]; then
     PROFILE="$HOME/.zshrc"
-elif [ -n "$BASH_VERSION" ]; then
+elif [ -f "$HOME/.bashrc" ]; then
     PROFILE="$HOME/.bashrc"
 else
-    PROFILE="$HOME/.profile"
+    # 逻辑：如果都不存在，则根据当前 SHELL 环境变量创建对应文件
+    CURRENT_SHELL=$(basename "$SHELL")
+    PROFILE="$HOME/.${CURRENT_SHELL}rc"
+    touch "$PROFILE"
 fi
 
-# Logic: Prevent duplicate entries in the profile file
-# 逻辑：防止在配置文件中重复写入环境变量
-if grep -q "UNISKILL_KEY" "$PROFILE"; then
-    # Update existing key
-    # 逻辑：如果已存在，则使用 sed 更新现有的 Key
+# ── Step 3: Idempotent Key Persistence ────────────────────
+# 逻辑：防止重复写入。使用兼容 macOS 和 Linux 的 sed 语法更新或追加 Key
+if grep -q "UNISKILL_KEY" "$PROFILE" 2>/dev/null; then
+    # 逻辑：兼容处理 BSD (macOS) 和 GNU (Linux) 的 sed -i 差异
     sed -i '' "s/export UNISKILL_KEY=.*/export UNISKILL_KEY=\"$API_KEY\"/" "$PROFILE" 2>/dev/null || \
     sed -i "s/export UNISKILL_KEY=.*/export UNISKILL_KEY=\"$API_KEY\"/" "$PROFILE"
 else
-    # Append new key
-    # 逻辑：如果不存在，则在文件末尾追加
     echo -e "\n# UniSkill Configuration" >> "$PROFILE"
     echo "export UNISKILL_KEY=\"$API_KEY\"" >> "$PROFILE"
 fi
 
-# Logic: Check for Python installation (optional but helpful for agents)
-# 逻辑：检查环境是否安装了 Python（对 AI Agent 开发至关重要）
+# ── Step 4: Dependency Diagnostic ──────────────────────────
+# 逻辑：检查 Python 3 环境，这是运行 AI Agent 的核心依赖
 if command -v python3 &>/dev/null; then
     echo -e "${GREEN}✓ Python 3 detected.${NC}"
 else
-    echo -e "${RED}! Warning: Python 3 not found. Most AI agents require Python.${NC}"
+    echo -e "${RED}! Warning: Python 3 not found.${NC}"
 fi
 
+# ── Step 5: Finalization ──────────────────────────────────
+# 逻辑：展示初始化成功的视觉反馈及后续 source 指令
 echo "-------------------------------------------------------"
 echo -e "${GREEN}Success! UniSkill environment initialized.${NC}"
-echo -e "Your key has been saved to: ${BLUE}$PROFILE${NC}"
-echo -e "Please run ${BLUE}source $PROFILE${NC} or restart your terminal to apply changes."
-echo -e "Happy hacking with UniSkill! (500 credits ready to use)"
+echo -e "Profile Updated: ${BLUE}$PROFILE${NC}"
+echo -e "Action Required: ${BLUE}source $PROFILE${NC}"
+echo -e "Happy hacking! (500 credits ready to use)"
+echo "-------------------------------------------------------"
