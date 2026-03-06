@@ -14,12 +14,16 @@ interface CreditEvent {
 }
 
 /* ── 相对时间格式化工具 ─────────────────────────────────────── */
-function relativeTime(isoString: string): string {
-    const diff = Math.floor((Date.now() - new Date(isoString).getTime()) / 1000);
-    if (diff < 60) return `${diff}s ago`;
-    if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
-    if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
-    return `${Math.floor(diff / 86400)}d ago`;
+/* ── 精确时间格式化工具 ─────────────────────────────────────── */
+function formatDateTime(isoString: string): string {
+    const date = new Date(isoString);
+    const y = date.getFullYear();
+    const m = String(date.getMonth() + 1).padStart(2, '0');
+    const d = String(date.getDate()).padStart(2, '0');
+    const hh = String(date.getHours()).padStart(2, '0');
+    const mm = String(date.getMinutes()).padStart(2, '0');
+    const ss = String(date.getSeconds()).padStart(2, '0');
+    return `${y}-${m}-${d} ${hh}:${mm}:${ss}`;
 }
 
 export default function QuickActivity() {
@@ -91,7 +95,7 @@ export default function QuickActivity() {
                 ) : (
                     /* 事件列表：数据由 API 负责按 created_at DESC 排序 */
                     <ul className="divide-y divide-slate-800/50">
-                        {events.map((evt) => {
+                        {events.slice(0, 3).map((evt) => {
                             // 判断正负决定图标和颜色
                             const isDeduction = evt.amount < 0;
                             return (
@@ -114,10 +118,10 @@ export default function QuickActivity() {
                                         )}
                                     </div>
 
-                                    {/* 技能名称 + 相对时间 */}
+                                    {/* 技能名称 + 精确时间 */}
                                     <div className="flex-1 min-w-0">
                                         <p className="text-sm font-medium text-slate-300 truncate">{evt.skill_name}</p>
-                                        <p className="text-xs text-slate-600">{relativeTime(evt.created_at)}</p>
+                                        <p className="text-xs text-slate-600">{formatDateTime(evt.created_at)}</p>
                                     </div>
 
                                     {/* 变动金额：负数 rose-400，正数 green-400 */}
