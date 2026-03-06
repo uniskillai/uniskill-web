@@ -19,7 +19,7 @@ export async function POST(req: Request) {
 
     // 1. Verify Admin Secret 验证管理员密钥
     if (authHeader !== `Bearer ${adminKey}`) {
-        console.warn(`[Webhook] Unauthorized request. Header mismatch. Received header length: ${authHeader?.length || 0}, Configured key length: ${adminKey.length}`);
+        console.warn("[Webhook] Unauthorized request. Header mismatch.");
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
