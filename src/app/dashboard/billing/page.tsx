@@ -8,6 +8,7 @@ import { useSession, signIn } from "next-auth/react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import DashboardNavbar from "@/components/Dashboard/DashboardNavbar";
+import { formatDateTime } from "@/lib/utils";
 
 interface CreditEvent {
     id: string;
@@ -16,21 +17,6 @@ interface CreditEvent {
     created_at: string;
 }
 
-/* ── 相对/绝对时间格式化 ── */
-function formatTime(isoString: string): { relative: string; absolute: string } {
-    const date = new Date(isoString);
-    const diff = Math.floor((Date.now() - date.getTime()) / 1000);
-    let relative = "";
-    if (diff < 60) relative = `${diff}s ago`;
-    else if (diff < 3600) relative = `${Math.floor(diff / 60)}m ago`;
-    else if (diff < 86400) relative = `${Math.floor(diff / 3600)}h ago`;
-    else relative = `${Math.floor(diff / 86400)}d ago`;
-    const absolute = date.toLocaleString("en-US", {
-        month: "short", day: "numeric", year: "numeric",
-        hour: "2-digit", minute: "2-digit",
-    });
-    return { relative, absolute };
-}
 
 export default function BillingPage() {
     const { data: session, status } = useSession();
@@ -137,7 +123,6 @@ export default function BillingPage() {
                         <ul className="divide-y divide-slate-800/50">
                             {events.map((evt) => {
                                 const isDeduction = evt.amount < 0;
-                                const { relative, absolute } = formatTime(evt.created_at);
                                 return (
                                     <li
                                         key={evt.id}
@@ -159,8 +144,8 @@ export default function BillingPage() {
                                         {/* 技能名称 */}
                                         <span className="text-sm font-medium text-slate-300 truncate">{evt.skill_name}</span>
 
-                                        {/* 时间（hover 显示绝对时间） */}
-                                        <span className="text-xs text-slate-500 text-right" title={absolute}>{relative}</span>
+                                        {/* 时间 */}
+                                        <span className="text-xs text-slate-500 text-right">{formatDateTime(evt.created_at)}</span>
 
                                         {/* 金额 */}
                                         <span className={`text-sm font-semibold tabular-nums text-right ${isDeduction ? "text-rose-400" : "text-green-400"}`}>
