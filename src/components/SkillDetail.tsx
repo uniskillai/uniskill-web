@@ -14,8 +14,9 @@ import Navbar from "@/components/Navbar";
 export interface SkillSpec {
     name: string;
     description: string;
+    costPerCall?: number; // 👈 补全定价字段
     parameters: Record<string, any>;
-    returns?: Record<string, any> | null; // 👈 新增的返回结果示例
+    returns?: Record<string, any> | null;
     implementation: Record<string, any>;
 }
 
