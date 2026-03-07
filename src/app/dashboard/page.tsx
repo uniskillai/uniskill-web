@@ -357,7 +357,7 @@ export default function DashboardPage() {
                         <p className="text-sm font-semibold text-slate-300">My Skills</p>
                         {/* 跳转到完整 Skills Store 页面 */}
                         <Link
-                            href="/dashboard/skills"
+                            href="/skills"
                             className="flex items-center gap-1 text-xs text-indigo-400 hover:text-indigo-300 transition-colors font-medium"
                         >
                             Explore All Skills
@@ -371,7 +371,7 @@ export default function DashboardPage() {
                         {[].map((skill: any) => (
                             <Link
                                 key={skill.name}
-                                href="/dashboard/skills"
+                                href="/skills"
                                 className="flex flex-col items-center gap-2 p-3 rounded-xl bg-slate-800/50 border border-slate-700/50 hover:border-indigo-500/50 hover:bg-indigo-500/5 transition-all cursor-pointer group"
                             >
                                 <span className="text-2xl group-hover:scale-110 transition-transform">{skill.icon}</span>
@@ -379,7 +379,7 @@ export default function DashboardPage() {
                             </Link>
                         ))}
                         <div className="col-span-full py-4 text-center">
-                            <p className="text-xs text-slate-600 italic">No skills installed yet. Visit the store to explore.</p>
+                            <p className="text-xs text-slate-600 italic">No skills installed yet. Visit the <Link href="/skills" className="text-indigo-400 hover:underline">store</Link> to explore.</p>
                         </div>
                     </div>
                 </motion.div>
