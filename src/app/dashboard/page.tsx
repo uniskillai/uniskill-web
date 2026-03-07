@@ -354,7 +354,7 @@ export default function DashboardPage() {
                 >
                     {/* 标题行：左侧技能标题，右侧跳转链接 */}
                     <div className="flex items-center justify-between mb-4">
-                        <p className="text-sm font-semibold text-slate-300">Available Skills</p>
+                        <p className="text-sm font-semibold text-slate-300">My Skills</p>
                         {/* 跳转到完整 Skills Store 页面 */}
                         <Link
                             href="/dashboard/skills"
@@ -366,16 +366,9 @@ export default function DashboardPage() {
                             </svg>
                         </Link>
                     </div>
-                    {/* 技能图标网格：每个 tile 均可点击跳转到 Skills Store */}
+                    {/* 技能图标网格：清空 mock 数据 */}
                     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3">
-                        {[
-                            { name: "Search", icon: "🔍" },
-                            { name: "Scrape", icon: "🕷️" },
-                            { name: "News", icon: "📰" },
-                            { name: "Social", icon: "💬" },
-                            { name: "Extract", icon: "🗂️" },
-                            { name: "Vision", icon: "👁️" },
-                        ].map((skill) => (
+                        {[].map((skill: any) => (
                             <Link
                                 key={skill.name}
                                 href="/dashboard/skills"
@@ -385,6 +378,9 @@ export default function DashboardPage() {
                                 <span className="text-xs font-medium text-slate-400 group-hover:text-indigo-300 transition-colors">{skill.name}</span>
                             </Link>
                         ))}
+                        <div className="col-span-full py-4 text-center">
+                            <p className="text-xs text-slate-600 italic">No skills installed yet. Visit the store to explore.</p>
+                        </div>
                     </div>
                 </motion.div>
             </main>
