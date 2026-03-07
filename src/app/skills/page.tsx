@@ -1,6 +1,5 @@
 // src/app/skills/page.tsx
-// Skills Store 页面 — 公开路由，无需登录即可访问
-// 路由：/skills
+// Logic: Dynamic Skills Store Page using Client-side fetching
 
 "use client";
 
@@ -9,113 +8,67 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import Navbar from "@/components/Navbar";
 
-/* ─── 技能数据定义 ─── */
-const SKILLS = [
-    {
-        id: "search",
-        name: "Search",
-        emoji: "🔍",
-        gradientFrom: "from-blue-500",
-        gradientTo: "to-cyan-400",
-        borderColor: "hover:border-blue-500/40",
-        description: "AI-powered web search with semantic ranking. Returns structured results with titles, URLs, and summaries from across the web.",
-        status: "Active" as const,
-        costPerCall: 1,
-        plugin: "uniskill_search",
-    },
-    {
-        id: "scrape",
-        name: "Scrape",
-        emoji: "🕷️",
-        gradientFrom: "from-purple-500",
-        gradientTo: "to-violet-400",
-        borderColor: "hover:border-purple-500/40",
-        description: "Extract full-page content from any URL. Handles JavaScript-rendered pages, returns clean markdown-formatted text.",
-        status: "Active" as const,
-        costPerCall: 2,
-        plugin: "uniskill_scrape",
-    },
-    {
-        id: "news",
-        name: "News",
-        emoji: "📰",
-        gradientFrom: "from-cyan-500",
-        gradientTo: "to-teal-400",
-        borderColor: "hover:border-cyan-500/40",
-        description: "Real-time news aggregation from 50,000+ sources. Filter by topic, region, and recency. Results include sentiment scores.",
-        status: "Active" as const,
-        costPerCall: 1,
-        plugin: "uniskill_news",
-    },
-    {
-        id: "social",
-        name: "Social",
-        emoji: "💬",
-        gradientFrom: "from-green-500",
-        gradientTo: "to-emerald-400",
-        borderColor: "hover:border-green-500/40",
-        description: "Monitor social media trends across Twitter/X, Reddit, and HN. Extract insights, track mentions, and analyze engagement.",
-        status: "Beta" as const,
-        costPerCall: 3,
-        plugin: "uniskill_social",
-    },
-    {
-        id: "extract",
-        name: "Extract",
-        emoji: "🗂️",
-        gradientFrom: "from-yellow-500",
-        gradientTo: "to-amber-400",
-        borderColor: "hover:border-yellow-500/40",
-        description: "Structured data extraction from documents, PDFs, and web pages. Output clean JSON matching your defined schema.",
-        status: "Active" as const,
-        costPerCall: 2,
-        plugin: "uniskill_extract",
-    },
-    {
-        id: "vision",
-        name: "Vision",
-        emoji: "👁️",
-        gradientFrom: "from-pink-500",
-        gradientTo: "to-rose-400",
-        borderColor: "hover:border-pink-500/40",
-        description: "Analyze images, screenshots, and charts with multimodal AI. Extract text, describe scenes, and answer visual questions.",
-        status: "Beta" as const,
-        costPerCall: 5,
-        plugin: "uniskill_vision",
-    },
-];
+// 逻辑：定义从网关 API 拉取到的动态技能结构
+interface DynamicSkill {
+    id: string;
+    name: string;
+    description: string;
+    isOfficial: boolean;
+}
 
-/* ─── 技能卡片组件 ─── */
-function SkillCard({ skill, index }: { skill: typeof SKILLS[0]; index: number }) {
+/**
+ * Logic: A helper to assign beautiful UI metadata based on skill ID
+ * 逻辑：根据动态技能 ID，自动映射分配对应的图标和渐变色，保留原有的优秀 UI 质感
+ */
+function getSkillTheme(id: string) {
+    const themes: Record<string, any> = {
+        "uniskill_search": { emoji: "🔍", from: "from-blue-500", to: "to-cyan-400", border: "hover:border-blue-500/40", cost: 1 },
+        "uniskill_scrape": { emoji: "🕷️", from: "from-purple-500", to: "to-violet-400", border: "hover:border-purple-500/40", cost: 2 },
+        "uniskill_news": { emoji: "📰", from: "from-cyan-500", to: "to-teal-400", border: "hover:border-cyan-500/40", cost: 1 },
+        "uniskill_social": { emoji: "💬", from: "from-green-500", to: "to-emerald-400", border: "hover:border-green-500/40", cost: 3 },
+        "uniskill_extract": { emoji: "🗂️", from: "from-yellow-500", to: "to-amber-400", border: "hover:border-yellow-500/40", cost: 2 },
+        "uniskill_vision": { emoji: "👁️", from: "from-pink-500", to: "to-rose-400", border: "hover:border-pink-500/40", cost: 5 },
+        // 逻辑：为未知/新上传的技能提供一个通用的优美默认主题
+        "default": { emoji: "⚡", from: "from-indigo-500", to: "to-purple-500", border: "hover:border-indigo-500/40", cost: 5 }
+    };
+    return themes[id] || themes["default"];
+}
+
+/* ─── 动态技能卡片组件 ─── */
+function SkillCard({ skill, index }: { skill: DynamicSkill; index: number }) {
+    // 逻辑：获取该技能对应的 UI 主题
+    const theme = getSkillTheme(skill.id);
+
     return (
         <motion.a
             href={`/skills/${skill.id}`}
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.05 * index + 0.2, duration: 0.45 }}
-            className={`glass-card p-6 border border-slate-700/50 ${skill.borderColor} hover:shadow-lg transition-all duration-300 group block cursor-pointer`}
+            className={`glass-card p-6 border border-slate-700/50 ${theme.border} hover:shadow-lg transition-all duration-300 group block cursor-pointer`}
         >
             <div className="flex items-start justify-between mb-4">
-                <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${skill.gradientFrom} ${skill.gradientTo} flex items-center justify-center text-2xl shadow-lg`}>
-                    {skill.emoji}
+                <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${theme.from} ${theme.to} flex items-center justify-center text-2xl shadow-lg`}>
+                    {theme.emoji}
                 </div>
-                {/* 状态徽章：Active 绿色，Beta 橙色 */}
-                <span className={`px-2 py-0.5 rounded-full text-xs font-semibold border ${skill.status === "Active"
-                    ? "bg-green-500/10 text-green-400 border-green-500/25"
-                    : "bg-orange-500/10 text-orange-400 border-orange-500/25"
+                {/* 逻辑：根据是否为官方技能，动态渲染徽章状态 */}
+                <span className={`px-2 py-0.5 rounded-full text-xs font-semibold border ${skill.isOfficial
+                        ? "bg-green-500/10 text-green-400 border-green-500/25"
+                        : "bg-blue-500/10 text-blue-400 border-blue-500/25"
                     }`}>
-                    {skill.status}
+                    {skill.isOfficial ? "Official" : "Community"}
                 </span>
             </div>
             <h3 className="text-base font-bold text-white mb-2 group-hover:text-indigo-300 transition-colors">{skill.name}</h3>
-            <p className="text-sm text-slate-400 leading-relaxed mb-5">{skill.description}</p>
+            {/* 逻辑：如果描述过长，进行优雅截断 */}
+            <p className="text-sm text-slate-400 leading-relaxed mb-5 line-clamp-3">{skill.description}</p>
             <div className="flex items-center justify-between pt-4 border-t border-slate-700/50">
-                <code className="text-xs text-slate-500 bg-slate-800/70 px-2 py-1 rounded font-mono">{skill.plugin}</code>
+                <code className="text-xs text-slate-500 bg-slate-800/70 px-2 py-1 rounded font-mono">{skill.id}</code>
                 <div className="flex items-center gap-1">
                     <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" strokeWidth="2">
                         <polygon points="13,2 3,14 12,14 11,22 21,10 12,10 13,2" />
                     </svg>
-                    <span className="text-xs font-bold text-purple-300">{skill.costPerCall} CR</span>
+                    <span className="text-xs font-bold text-purple-300">{theme.cost} CR</span>
                     <span className="text-xs text-slate-600">/ call</span>
                 </div>
             </div>
@@ -123,16 +76,16 @@ function SkillCard({ skill, index }: { skill: typeof SKILLS[0]; index: number })
     );
 }
 
-/* ─── Skills Store 主页面 ─────────────────────────────────────────────────
-   公开路由：无需登录，任何人均可访问
-   ─────────────────────────────────────────────────────────────────────── */
+/* ─── Skills Store 主页面 ─── */
 export default function SkillsPage() {
-    // 读取 session（公开页面，status 可能为 unauthenticated）
     const { data: session, status } = useSession();
     const [liveCredits, setLiveCredits] = useState<number | undefined>(undefined);
     const [copied, setCopied] = useState(false);
 
-    // 已登录时拉取最新 credits
+    // 逻辑：新增技能列表状态和加载状态
+    const [skills, setSkills] = useState<DynamicSkill[]>([]);
+    const [isLoadingSkills, setIsLoadingSkills] = useState(true);
+
     const fetchLiveCredits = async () => {
         try {
             const res = await fetch("/api/user/credits");
@@ -145,26 +98,39 @@ export default function SkillsPage() {
         }
     };
 
+    // 逻辑：组件挂载时，从网关拉取真实的 KV 技能列表
     useEffect(() => {
-        // 仅认证通过后才请求 credits 接口，避免 guest 触发无效请求
+        async function fetchSkills() {
+            try {
+                // 注意：使用环境变量或真实网关域名
+                const gatewayUrl = process.env.NEXT_PUBLIC_GATEWAY_URL || 'https://api.uniskill.ai';
+                const res = await fetch(`${gatewayUrl}/v1/skills`);
+                const json = await res.json();
+                if (json.success) {
+                    setSkills(json.data);
+                }
+            } catch (error) {
+                console.error("Failed to load skills from gateway:", error);
+            } finally {
+                setIsLoadingSkills(false);
+            }
+        }
+        fetchSkills();
+    }, []);
+
+    useEffect(() => {
         if (status !== "authenticated") return;
         setLiveCredits(session?.user?.credits ?? 500);
         fetchLiveCredits();
         window.addEventListener("focus", fetchLiveCredits);
         return () => window.removeEventListener("focus", fetchLiveCredits);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [status]);
 
-    /* ── Key 注入逻辑 ──────────────────────────────────────────────────────
-       已登录且有 rawKey（首次登录）→ 注入真实 key，显示 Copy 按钮
-       已登录但无 rawKey（非首次）→ 占位符，提示去 Dashboard 查看
-       未登录 → 占位符，按钮改为 Sign in to get Key
-       ─────────────────────────────────────────────────────────────────────── */
     const isLoggedIn = status === "authenticated";
     const rawKey = session?.user?.rawKey;
     const displayKey = isLoggedIn && rawKey ? rawKey : "your_api_key";
     const hasRealKey = isLoggedIn && !!rawKey;
-    const isLoading = status === "loading";
+    const isLoadingAuth = status === "loading";
 
     const installCommand = `curl -s https://uniskill.ai/setup-skills.sh | bash -s -- ${displayKey}`;
 
@@ -175,11 +141,8 @@ export default function SkillsPage() {
     };
 
     return (
-        // 使用主站 Navbar（已包含 Skills 高亮支持），页面背景与首页保持一致
         <div className="min-h-screen bg-[#0a0f1e] bg-grid">
             <Navbar />
-
-            {/* 顶部 Navbar 占位（Navbar 是 fixed 定位，需要 padding-top 避免内容被遮挡） */}
             <main className="max-w-5xl mx-auto px-6 pt-28 pb-16">
 
                 {/* ── 页面标题 ── */}
@@ -220,7 +183,7 @@ export default function SkillsPage() {
                         </div>
 
                         {/* 右侧按钮：根据登录状态条件渲染 */}
-                        {isLoading ? (
+                        {isLoadingAuth ? (
                             <div className="w-40 h-8 rounded-lg bg-slate-700/50 animate-pulse shrink-0" />
                         ) : isLoggedIn ? (
                             <motion.button
@@ -278,16 +241,24 @@ export default function SkillsPage() {
                 </motion.div>
 
                 {/* ── Skills 卡片网格 ── */}
-                <div>
+                <div className="mt-12">
                     <motion.h2
                         initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.15, duration: 0.4 }}
                         className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-4"
                     >
-                        {SKILLS.length} Available Skills
+                        {isLoadingSkills ? "Loading Skills..." : `${skills.length} Available Skills`}
                     </motion.h2>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-                        {SKILLS.map((skill, i) => <SkillCard key={skill.id} skill={skill} index={i} />)}
-                    </div>
+
+                    {/* 逻辑：数据加载完毕后动态渲染，否则显示骨架屏或空状态 */}
+                    {isLoadingSkills ? (
+                        <div className="flex justify-center items-center py-20">
+                            <div className="w-8 h-8 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
+                        </div>
+                    ) : (
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                            {skills.map((skill, i) => <SkillCard key={skill.id} skill={skill} index={i} />)}
+                        </div>
+                    )}
                 </div>
 
                 {/* ── Option B 架构说明 ── */}
