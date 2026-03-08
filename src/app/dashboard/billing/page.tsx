@@ -22,6 +22,13 @@ export default function BillingPage() {
     const { data: session, status } = useSession();
     const [events, setEvents] = useState<CreditEvent[]>([]);
     const [loading, setLoading] = useState(true);
+    const [currentPage, setCurrentPage] = useState(1);
+    const eventsPerPage = 10;
+
+    // Derived values for pagination
+    const totalPages = Math.ceil(events.length / eventsPerPage);
+    const startIndex = (currentPage - 1) * eventsPerPage;
+    const currentEvents = events.slice(startIndex, startIndex + eventsPerPage);
 
     useEffect(() => {
         if (status !== "authenticated") return;
@@ -123,7 +130,7 @@ export default function BillingPage() {
                     ) : (
                         /* 事件行：数据由 API 按 created_at DESC 排序 */
                         <ul className="divide-y divide-slate-800/50">
-                            {events.map((evt) => {
+                            {currentEvents.map((evt) => {
                                 const isDeduction = evt.amount < 0;
                                 return (
                                     <li
@@ -173,9 +180,37 @@ export default function BillingPage() {
                             })}
                         </ul>
                     )}
+
+                    {/* Pagination Controls */}
+                    {totalPages > 1 && (
+                        <div className="flex items-center justify-between px-5 py-4 border-t border-slate-800/60 bg-slate-900/40">
+                            <span className="text-xs text-slate-500">
+                                Showing {startIndex + 1} to {Math.min(startIndex + eventsPerPage, events.length)} of {events.length} events
+                            </span>
+                            <div className="flex items-center gap-2">
+                                <button
+                                    onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                                    disabled={currentPage === 1}
+                                    className="p-1.5 rounded-md text-slate-400 hover:text-white hover:bg-slate-800 disabled:opacity-50 disabled:pointer-events-none transition-colors"
+                                >
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                                </button>
+                                <span className="text-xs font-medium text-slate-300">
+                                    Page {currentPage} of {totalPages}
+                                </span>
+                                <button
+                                    onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                                    disabled={currentPage === totalPages}
+                                    className="p-1.5 rounded-md text-slate-400 hover:text-white hover:bg-slate-800 disabled:opacity-50 disabled:pointer-events-none transition-colors"
+                                >
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                                </button>
+                            </div>
+                        </div>
+                    )}
                 </motion.div>
 
-                {events.length > 0 && (
+                {events.length > 0 && totalPages <= 1 && (
                     <p className="text-xs text-slate-700 text-center mt-4">
                         Showing {events.length} event{events.length !== 1 ? "s" : ""}
                     </p>
