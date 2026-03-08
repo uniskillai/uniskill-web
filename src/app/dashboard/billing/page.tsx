@@ -23,12 +23,21 @@ export default function BillingPage() {
     const [events, setEvents] = useState<CreditEvent[]>([]);
     const [loading, setLoading] = useState(true);
     const [currentPage, setCurrentPage] = useState(1);
+    const [filterType, setFilterType] = useState<"all" | "usage" | "topup">("all");
     const eventsPerPage = 10;
 
-    // Derived values for pagination
-    const totalPages = Math.ceil(events.length / eventsPerPage);
+    // Derived values: 1. Filter events based on type
+    const filteredEvents = events.filter((evt) => {
+        if (filterType === "all") return true;
+        if (filterType === "usage") return evt.amount < 0;
+        if (filterType === "topup") return evt.amount > 0;
+        return true;
+    });
+
+    // Derived values: 2. Calculate pagination on FILTERED events
+    const totalPages = Math.ceil(filteredEvents.length / eventsPerPage);
     const startIndex = (currentPage - 1) * eventsPerPage;
-    const currentEvents = events.slice(startIndex, startIndex + eventsPerPage);
+    const currentEvents = filteredEvents.slice(startIndex, startIndex + eventsPerPage);
 
     useEffect(() => {
         if (status !== "authenticated") return;
@@ -67,24 +76,51 @@ export default function BillingPage() {
             <DashboardNavbar credits={credits} totalCredits={500} />
 
             <main className="max-w-3xl mx-auto px-6 py-10">
-                {/* 返回按钮 + 标题 */}
-                <motion.div
-                    initial={{ opacity: 0, y: 16 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="mb-8"
-                >
-                    <Link
-                        href="/dashboard"
-                        className="inline-flex items-center gap-1.5 text-xs text-slate-500 hover:text-slate-300 transition-colors mb-4"
+                <div className="flex items-end justify-between mb-8">
+                    <motion.div
+                        initial={{ opacity: 0, y: 16 }}
+                        animate={{ opacity: 1, y: 0 }}
                     >
-                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                            <path d="M19 12H5M12 5l-7 7 7 7" />
-                        </svg>
-                        Back to Dashboard
-                    </Link>
-                    <h1 className="text-2xl font-black text-white mb-1">Billing & Credits</h1>
-                    <p className="text-slate-500 text-sm">Full credit usage history</p>
-                </motion.div>
+                        <Link
+                            href="/dashboard"
+                            className="inline-flex items-center gap-1.5 text-xs text-slate-500 hover:text-slate-300 transition-colors mb-4"
+                        >
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                <path d="M19 12H5M12 5l-7 7 7 7" />
+                            </svg>
+                            Back to Dashboard
+                        </Link>
+                        <h1 className="text-2xl font-black text-white mb-1">Billing & Credits</h1>
+                        <p className="text-slate-500 text-sm">Full credit usage history</p>
+                    </motion.div>
+
+                    {/* Type 筛选器 - 右侧对齐 */}
+                    <motion.div
+                        initial={{ opacity: 0, y: 16 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.05 }}
+                        className="flex items-center gap-1 p-1 bg-slate-900/50 border border-slate-800 rounded-lg"
+                    >
+                        <button
+                            onClick={() => { setFilterType("all"); setCurrentPage(1); }}
+                            className={`px-3 py-1.5 text-xs font-medium rounded-md transition-all ${filterType === 'all' ? 'bg-slate-700 text-white shadow-sm' : 'text-slate-400 hover:text-slate-300'}`}
+                        >
+                            All
+                        </button>
+                        <button
+                            onClick={() => { setFilterType("usage"); setCurrentPage(1); }}
+                            className={`px-3 py-1.5 text-xs font-medium rounded-md transition-all ${filterType === 'usage' ? 'bg-slate-700 text-white shadow-sm' : 'text-slate-400 hover:text-slate-300'}`}
+                        >
+                            Usage
+                        </button>
+                        <button
+                            onClick={() => { setFilterType("topup"); setCurrentPage(1); }}
+                            className={`px-3 py-1.5 text-xs font-medium rounded-md transition-all ${filterType === 'topup' ? 'bg-slate-700 text-white shadow-sm' : 'text-slate-400 hover:text-slate-300'}`}
+                        >
+                            Top-ups
+                        </button>
+                    </motion.div>
+                </div>
 
                 {/* 积分事件列表 */}
                 <motion.div
@@ -185,7 +221,7 @@ export default function BillingPage() {
                     {totalPages > 1 && (
                         <div className="flex items-center justify-between px-5 py-4 border-t border-slate-800/60 bg-slate-900/40">
                             <span className="text-xs text-slate-500">
-                                Showing {startIndex + 1} to {Math.min(startIndex + eventsPerPage, events.length)} of {events.length} events
+                                Showing {filteredEvents.length > 0 ? startIndex + 1 : 0} to {Math.min(startIndex + eventsPerPage, filteredEvents.length)} of {filteredEvents.length} events
                             </span>
                             <div className="flex items-center gap-2">
                                 <button
@@ -210,9 +246,9 @@ export default function BillingPage() {
                     )}
                 </motion.div>
 
-                {events.length > 0 && totalPages <= 1 && (
+                {filteredEvents.length > 0 && totalPages <= 1 && (
                     <p className="text-xs text-slate-700 text-center mt-4">
-                        Showing {events.length} event{events.length !== 1 ? "s" : ""}
+                        Showing {filteredEvents.length} event{filteredEvents.length !== 1 ? "s" : ""}
                     </p>
                 )}
             </main>
