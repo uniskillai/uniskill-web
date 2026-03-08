@@ -87,9 +87,10 @@ export default function BillingPage() {
                     className="rounded-2xl bg-slate-900/40 border border-slate-800 overflow-hidden"
                 >
                     {/* 表头 */}
-                    <div className="grid grid-cols-[auto_1fr_auto_auto] gap-4 px-5 py-3 border-b border-slate-800/60 text-xs font-semibold text-slate-500 uppercase tracking-wide">
+                    <div className="grid grid-cols-[auto_1fr_1fr_auto_auto] gap-4 px-5 py-3 border-b border-slate-800/60 text-xs font-semibold text-slate-500 uppercase tracking-wide">
                         <span>Type</span>
                         <span>Skill</span>
+                        <span>Request ID</span>
                         <span className="text-right">Time</span>
                         <span className="text-right">Amount</span>
                     </div>
@@ -98,9 +99,10 @@ export default function BillingPage() {
                         /* 骨架 */
                         <ul className="divide-y divide-slate-800/50">
                             {[...Array(5)].map((_, i) => (
-                                <li key={i} className="grid grid-cols-[auto_1fr_auto_auto] gap-4 px-5 py-4 animate-pulse items-center">
+                                <li key={i} className="grid grid-cols-[auto_1fr_1fr_auto_auto] gap-4 px-5 py-4 animate-pulse items-center">
                                     <div className="w-6 h-6 rounded-full bg-slate-700/60" />
                                     <div className="h-3 w-28 rounded bg-slate-700/60" />
+                                    <div className="h-3 w-32 rounded bg-slate-700/40" />
                                     <div className="h-3 w-16 rounded bg-slate-700/40" />
                                     <div className="h-3 w-8 rounded bg-slate-700/60" />
                                 </li>
@@ -126,7 +128,7 @@ export default function BillingPage() {
                                 return (
                                     <li
                                         key={evt.id}
-                                        className="grid grid-cols-[auto_1fr_auto_auto] gap-4 px-5 py-4 items-center hover:bg-slate-800/30 transition-colors"
+                                        className="grid grid-cols-[auto_1fr_1fr_auto_auto] gap-4 px-5 py-4 items-center hover:bg-slate-800/30 transition-colors group/row"
                                     >
                                         {/* 方向图标 */}
                                         <div className={`w-6 h-6 rounded-full flex items-center justify-center shrink-0 ${isDeduction ? "bg-rose-500/10" : "bg-green-500/10"}`}>
@@ -144,8 +146,23 @@ export default function BillingPage() {
                                         {/* 技能名称 */}
                                         <span className="text-sm font-medium text-slate-300 truncate">{evt.skill_name}</span>
 
+                                        {/* Request ID */}
+                                        <span
+                                            className="text-[10px] font-mono text-slate-500 truncate cursor-pointer hover:text-indigo-400 flex items-center gap-1 group/id transition-colors"
+                                            onClick={() => {
+                                                navigator.clipboard.writeText(evt.id);
+                                                // Optional: provide visual feedback
+                                            }}
+                                            title="Click to copy Request ID"
+                                        >
+                                            {evt.id}
+                                            <svg className="opacity-0 group-hover/id:opacity-100 transition-opacity" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                                <rect x="9" y="9" width="13" height="13" rx="2" ry="2" /><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                                            </svg>
+                                        </span>
+
                                         {/* 时间 */}
-                                        <span className="text-xs text-slate-500 text-right">{formatDateTime(evt.created_at)}</span>
+                                        <span className="text-xs text-slate-500 text-right whitespace-nowrap">{formatDateTime(evt.created_at)}</span>
 
                                         {/* 金额 */}
                                         <span className={`text-sm font-semibold tabular-nums text-right ${isDeduction ? "text-rose-400" : "text-green-400"}`}>
