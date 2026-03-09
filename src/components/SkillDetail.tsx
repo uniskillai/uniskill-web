@@ -81,9 +81,14 @@ export const SkillDetail: React.FC<SkillDetailProps> = ({ skillId, skill, isOffi
     const hasRealKey = isLoggedIn && session.user?.image;
     const displayKey = hasRealKey ? "usk_app_7v2k...9z1" : "YOUR_API_KEY";
 
-    const parameterList = Object.keys(skill.parameters || {}).map(key => ({
+    // 逻辑：兼容 JSON Schema 格式与旧版平铺格式
+    const properties = skill.parameters?.properties || skill.parameters || {};
+    const required = skill.parameters?.required || [];
+
+    const parameterList = Object.keys(properties).map(key => ({
         name: key,
-        ...skill.parameters[key]
+        ...properties[key],
+        required: required.includes(key) || properties[key].required
     }));
 
     const meta = META_FALLBACK[skillId] || META_FALLBACK["default"];
