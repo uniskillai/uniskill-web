@@ -176,7 +176,7 @@ export default function SkillsStorePage() {
                                                 <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" strokeWidth="2">
                                                     <polygon points="13,2 3,14 12,14 11,22 21,10 12,10 13,2" />
                                                 </svg>
-                                                <span className="text-xs font-bold text-purple-400">{skill.costPerCall || 1} CR</span>
+                                                <span className="text-xs font-bold text-purple-400">{skill.costPerCall ?? 1} CR</span>
                                             </div>
                                         </div>
                                     </motion.a>
