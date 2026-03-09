@@ -3,7 +3,7 @@ id: "uniskill_scrape"
 name: "Web Scraper"
 emoji: "🕷️"
 status: "Official"
-costPerCall: 20
+costPerCall: 10
 category: "web_search"
 tags: ["scrape", "extraction", "data"]
 gradientFrom: "from-emerald-500"
@@ -31,22 +31,8 @@ Extract clean, LLM-friendly Markdown content from any website URL. Powered by Ji
 
 ## Implementation YAML
 ```yaml
-# Logic: Identification for applying UniSkill official optimizations
-# 逻辑：标识符，用于应用 UniSkill 官方深度优化
-type: official_optimized
-endpoint: "https://r.jina.ai/"
+# Logic: Point directly to UniSkill's internal robust gateway
+# 逻辑：直接指向 UniSkill 内部极其强健的 API 网关专线
+endpoint: "https://api.uniskill.ai/v1/scrape"
 method: "POST"
-
-# Logic: Mapping internal credentials
-# 逻辑：映射内部凭证
-api_key: "{{JINA_API_KEY}}"
-
-# Logic: Mapping AI-generated arguments to the API payload
-# 逻辑：将 AI 生成的参数映射到 API 请求体
-payload:
-  url: "{{url}}"
-
-# Logic: Hook to trigger the data cleaning plugin
-# 逻辑：触发数据清洗插件的钩子
-plugin_hook: "JINA_READER_FORMATTER"
 ```
