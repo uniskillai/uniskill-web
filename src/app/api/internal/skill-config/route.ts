@@ -5,6 +5,7 @@ import { NextRequest, NextResponse } from "next/server";
 import fs from "fs";
 import path from "path";
 import yaml from "js-yaml";
+import { parseSkillFile } from "@/lib/skills-parser";
 
 export async function GET(request: NextRequest) {
     // 逻辑：获取网关请求的技能 ID
@@ -29,19 +30,32 @@ export async function GET(request: NextRequest) {
             return NextResponse.json({ error: "Skill not found" }, { status: 404 });
         }
 
-        const mdContent = fs.readFileSync(filePath, "utf-8");
+        // 🔵 核心变革：使用统一的 Parser 获取完整结构 (包含 meta, config, docs)
+        const skillData = parseSkillFile(skillId);
 
-        // 逻辑：通过正则精准提取 Implementation YAML 区块
-        const implMatch = mdContent.match(/## Implementation YAML\s+```yaml\s+([\s\S]*?)\s+```/);
-
-        if (!implMatch || !implMatch[1]) {
-            return NextResponse.json({ error: "Implementation missing in MD" }, { status: 500 });
+        if (!skillData) {
+            return NextResponse.json({ error: "Skill not found in registry" }, { status: 404 });
         }
 
-        // 逻辑：将 YAML 字符串解析为 JSON 对象返回给网关
-        const implementation = yaml.load(implMatch[1]);
-
-        return NextResponse.json({ implementation });
+        // 逻辑：构造大一统 JSON 结构返回给网关
+        return NextResponse.json({
+            id: skillData.id,
+            source: skillData.status.toLowerCase(),
+            meta: {
+                name: skillData.name,
+                emoji: skillData.emoji,
+                cost: skillData.costPerCall,
+                category: skillData.category,
+                tags: skillData.tags
+            },
+            config: typeof skillData.implementation === 'string'
+                ? yaml.load(skillData.implementation)
+                : skillData.implementation,
+            docs: {
+                short: skillData.description,
+                full_md: fs.readFileSync(path.join(process.cwd(), "registry", "skills", `${skillId}.md`), "utf-8")
+            }
+        });
 
     } catch (error) {
         console.error("Internal API Error:", error);

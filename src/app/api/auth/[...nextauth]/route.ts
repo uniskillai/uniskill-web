@@ -4,9 +4,6 @@
 import NextAuth from "next-auth";
 import { authOptions } from "@/lib/authOptions";
 
-export const dynamic = "force-dynamic";
+const handler = NextAuth(authOptions);
 
-export const handler = NextAuth(authOptions);
-
-/* ─── 导出 GET/POST handler 供 App Router 使用 ─── */
 export { handler as GET, handler as POST };

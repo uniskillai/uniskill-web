@@ -8,7 +8,7 @@ import yaml from "js-yaml";
 import dotenv from "dotenv";
 
 // 逻辑：加载环境变量中的 Cloudflare 凭证
-dotenv.config();
+dotenv.config({ path: ".env.local" });
 
 const ACCOUNT_ID = process.env.CLOUDFLARE_ACCOUNT_ID;
 const API_TOKEN = process.env.CLOUDFLARE_API_TOKEN;
@@ -17,14 +17,14 @@ const NAMESPACE_ID = process.env.CLOUDFLARE_KV_NAMESPACE_ID;
 const SKILLS_DIR = path.join(process.cwd(), "registry", "skills");
 
 // 逻辑：Cloudflare KV REST API 基础写入函数
-async function putToKV(key: string, value: string) {
+async function putToKV(key: string, value: string, contentType: string = "application/json") {
     const url = `https://api.cloudflare.com/client/v4/accounts/${ACCOUNT_ID}/storage/kv/namespaces/${NAMESPACE_ID}/values/${key}`;
 
     const response = await fetch(url, {
         method: "PUT",
         headers: {
             "Authorization": `Bearer ${API_TOKEN}`,
-            "Content-Type": "application/json"
+            "Content-Type": contentType
         },
         body: value
     });
@@ -73,17 +73,36 @@ async function syncSkillsToKV() {
             // 逻辑：将 YAML 字符串直接转为 JSON，让 Gateway 读取时性能最大化
             const implementationJson = yaml.load(implMatch[1]);
 
-            // 逻辑 1：组装并推送前端展示需要的 UI 元数据 (加上 meta: 前缀隔离)
-            const metadataPayload = {
-                ...frontmatter,
-                description
+            // 逻辑 1：构建大一统 JSON 结构 (Unified Skill Object)
+            const status = (frontmatter.status || "Official").toLowerCase();
+            const unifiedSkill = {
+                id: skillId,
+                source: status,
+                meta: {
+                    name: frontmatter.name || skillId,
+                    emoji: frontmatter.emoji || "🧩",
+                    cost: frontmatter.costPerCall || 0,
+                    category: frontmatter.category || "utilities",
+                    tags: frontmatter.tags || []
+                },
+                config: implementationJson,
+                docs: {
+                    short: description,
+                    full_md: fileContent
+                }
             };
-            await putToKV(`meta:${skillId}`, JSON.stringify(metadataPayload));
-            console.log(`✅ Success: Pushed Metadata -> meta:${skillId}`);
 
-            // 逻辑 2：组装并推送网关执行需要的底层配置 (加上 config: 前缀隔离)
-            await putToKV(`config:${skillId}`, JSON.stringify(implementationJson));
-            console.log(`✅ Success: Pushed Config   -> config:${skillId}`);
+            // 逻辑 2：同步到网关要求的统一路径 (彻底取代碎文件)
+            let gatewayKey = `skill:official:${skillId}`;
+            if (status === "market") {
+                gatewayKey = `skill:market:${skillId}`;
+            }
+
+            await putToKV(gatewayKey, JSON.stringify(unifiedSkill), "application/json");
+            console.log(`✅ Success: Pushed Unified JSON -> ${gatewayKey}`);
+
+            await putToKV(gatewayKey, JSON.stringify(unifiedSkill), "application/json");
+            console.log(`✅ Success: Pushed Unified JSON -> ${gatewayKey}`);
 
         } catch (error: any) {
             console.error(`❌ Failed to parse/sync [${file}]:`, error.message);
