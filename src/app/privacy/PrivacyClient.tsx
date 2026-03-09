@@ -13,7 +13,7 @@ export default function PrivacyClient() {
                 "Account Information: When you register via GitHub OAuth, we collect your GitHub ID, email address, and profile name to manage your account and authentication.",
                 "API Keys: We generate and store unique API keys (e.g., in the format us-xxxxxxxx) to authorize your agent's requests.",
                 "Usage Data: We log API request metadata, including timestamps, skill types used (e.g., uniskill_search, uniskill_scrape), and credit consumption to maintain your balance and prevent service abuse.",
-                "Technical Logs: For security and rate-limiting purposes, we collect IP addresses and browser/environment data when you execute our setup-skills.sh script or access our gateway.",
+                "Technical Logs: For security and rate-limiting purposes, we collect IP addresses and browser/environment data when you execute our connect.sh script or access our gateway.",
             ],
         },
         {

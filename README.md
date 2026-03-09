@@ -12,7 +12,7 @@ The fastest way to prepare your environment is using our automated setup script.
 
 ```bash
 # Get your API Key at uniskill.ai and execute the setup
-curl -fsSL https://uniskill.ai/setup-skills.sh | bash -s -- your_api_key
+curl -fsSL https://uniskill.ai/connect.sh | bash -s -- your_api_key
 
 ```
 
@@ -38,7 +38,7 @@ Once your environment is initialized, you can trigger any skill with a simple PO
 import os
 import requests
 
-# Logic: Retrieve the API key from the environment set by setup-skills.sh
+# Logic: Retrieve the API key from the environment set by connect.sh
 api_key = os.getenv("UNISKILL_KEY")
 
 def trigger_search_skill(query):

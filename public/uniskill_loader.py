@@ -13,7 +13,7 @@ import json
 import urllib.request
 import urllib.error
 
-# 云端清单地址 — 由 setup-skills.sh 写入，始终指向最新版本
+# 云端清单地址 — 由 connect.sh 写入，始终指向最新版本
 MANIFEST_URL = "https://uniskill-gateway.geekpro798.workers.dev/v1/skills"
 
 # 从环境变量读取 API Key，避免硬编码敏感信息
@@ -25,7 +25,7 @@ def _fetch_manifest() -> dict:
     if not API_KEY:
         raise EnvironmentError(
             "[UniSkill] UNISKILL_KEY is not set. "
-            "Run setup-skills.sh first or export the variable manually."
+            "Run connect.sh first or export the variable manually."
         )
 
     # 构造带 Bearer 认证头与标准 User-Agent 的请求

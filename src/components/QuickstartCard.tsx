@@ -10,7 +10,7 @@ import { motion } from 'framer-motion';
  */
 const QuickstartCard = () => {
     // 逻辑：定义设置命令变量
-    const setupCommand = "curl -fsSL https://uniskill.ai/setup-skills.sh | bash -s -- <YOUR_KEY>";
+    const setupCommand = "curl -fsSL https://uniskill.ai/connect.sh | bash -s -- <YOUR_KEY>";
 
     // 逻辑：实现复制到剪贴板功能
     const [copied, setCopied] = useState(false);
@@ -71,7 +71,7 @@ const QuickstartCard = () => {
                         <span className="leading-relaxed">
                             <span className="text-blue-400">curl</span>
                             <span className="text-slate-400"> -fsSL </span>
-                            <span className="text-green-400">https://uniskill.ai/setup-skills.sh</span>
+                            <span className="text-green-400">https://uniskill.ai/connect.sh</span>
                             <span className="text-slate-400"> | </span>
                             <span className="text-blue-400">bash</span>
                             <span className="text-slate-400"> -s -- </span>

@@ -23,7 +23,7 @@ try:
 except ImportError:
     print("\n❌ [UniSkill Error] utils/uniskill_loader.py not found!", file=sys.stderr)
     print("Please run the setup script first:", file=sys.stderr)
-    print("curl -s https://uniskill-web.vercel.app/setup-skills.sh | bash -s -- <YOUR_KEY>\n", file=sys.stderr)
+    print("curl -s https://uniskill.ai/connect.sh | bash -s -- <YOUR_KEY>\n", file=sys.stderr)
     sys.exit(1)
 
 

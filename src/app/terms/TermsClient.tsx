@@ -14,7 +14,7 @@ export default function TermsClient() {
             title: "Account Registration and Security",
             list: [
                 "Authentication: You must authenticate via GitHub OAuth to create an account.",
-                "API Key Responsibility: Upon registration or via our setup-skills.sh script, you are provided with a unique API Key (e.g., us-xxxxxxxx).",
+                "API Key Responsibility: Upon registration or via our connect.sh script, you are provided with a unique API Key (e.g., us-xxxxxxxx).",
                 "Security: You are solely responsible for maintaining the confidentiality of your key. Any activity performed using your key will be attributed to your account.",
             ],
         },
