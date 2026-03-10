@@ -26,48 +26,82 @@ export default function IntegrationCard({ rawKey }: IntegrationCardProps) {
         }
     }, []);
 
-    const displayKey = rawKey ?? "your-key-here";
-
-    const commands: Record<OS, { label: string; cmd: string; rendered: React.ReactNode }> = {
-        mac: {
-            label: "Mac / Linux",
-            cmd: `curl -fsSL https://uniskill.ai/connect.sh | bash -s -- ${displayKey}`,
-            rendered: (
-                <code className="break-all block">
-                    <span className="text-slate-500">$ </span>
-                    <span className="text-blue-400">curl</span>
-                    <span className="text-slate-400"> -fsSL </span>
-                    <span className="text-green-400">https://uniskill.ai/connect.sh</span>
-                    <span className="text-slate-400"> | </span>
-                    <span className="text-blue-400">bash</span>
-                    <span className="text-slate-400"> -s -- </span>
-                    <span className={rawKey ? "text-indigo-300" : "text-slate-500 italic"}>
-                        {displayKey}
-                    </span>
-                </code>
-            ),
-        },
-        windows: {
-            label: "Windows",
-            cmd: `$env:UNISKILL_KEY="${displayKey}"; irm https://uniskill.ai/connect.ps1 | iex`,
-            rendered: (
-                <code className="break-all block">
-                    <span className="text-slate-500">&gt; </span>
-                    <span className="text-yellow-400">$env:UNISKILL_KEY</span>
-                    <span className="text-slate-400">=&quot;</span>
-                    <span className={rawKey ? "text-indigo-300" : "text-slate-500 italic"}>
-                        {displayKey}
-                    </span>
-                    <span className="text-slate-400">&quot;; </span>
-                    <span className="text-blue-400">irm</span>
-                    <span className="text-slate-400"> </span>
-                    <span className="text-green-400">https://uniskill.ai/connect.ps1</span>
-                    <span className="text-slate-400"> | </span>
-                    <span className="text-blue-400">iex</span>
-                </code>
-            ),
-        },
+    // Helper to generate commands based on the presence of a real key
+    const getCommands = (): Record<OS, { label: string; cmd: string; rendered: React.ReactNode }> => {
+        if (rawKey) {
+            // When we have the real key (e.g. right after sign-in), give the one-click long command
+            return {
+                mac: {
+                    label: "Mac / Linux",
+                    cmd: `curl -fsSL https://uniskill.ai/connect.sh | bash -s -- ${rawKey}`,
+                    rendered: (
+                        <code className="break-all block">
+                            <span className="text-slate-500">$ </span>
+                            <span className="text-blue-400">curl</span>
+                            <span className="text-slate-400"> -fsSL </span>
+                            <span className="text-green-400">https://uniskill.ai/connect.sh</span>
+                            <span className="text-slate-400"> | </span>
+                            <span className="text-blue-400">bash</span>
+                            <span className="text-slate-400"> -s -- </span>
+                            <span className="text-indigo-300">{rawKey}</span>
+                        </code>
+                    ),
+                },
+                windows: {
+                    label: "Windows",
+                    cmd: `$env:UNISKILL_KEY="${rawKey}"; irm https://uniskill.ai/connect.ps1 | iex`,
+                    rendered: (
+                        <code className="break-all block">
+                            <span className="text-slate-500">&gt; </span>
+                            <span className="text-yellow-400">$env:UNISKILL_KEY</span>
+                            <span className="text-slate-400">=&quot;</span>
+                            <span className="text-indigo-300">{rawKey}</span>
+                            <span className="text-slate-400">&quot;; </span>
+                            <span className="text-blue-400">irm</span>
+                            <span className="text-slate-400"> </span>
+                            <span className="text-green-400">https://uniskill.ai/connect.ps1</span>
+                            <span className="text-slate-400"> | </span>
+                            <span className="text-blue-400">iex</span>
+                        </code>
+                    ),
+                },
+            };
+        } else {
+            // When there is no key available on the page, show the clean interactive commands
+            return {
+                mac: {
+                    label: "Mac / Linux",
+                    cmd: `curl -fsSL https://uniskill.ai/connect.sh | bash`,
+                    rendered: (
+                        <code className="break-all block">
+                            <span className="text-slate-500">$ </span>
+                            <span className="text-blue-400">curl</span>
+                            <span className="text-slate-400"> -fsSL </span>
+                            <span className="text-green-400">https://uniskill.ai/connect.sh</span>
+                            <span className="text-slate-400"> | </span>
+                            <span className="text-blue-400">bash</span>
+                        </code>
+                    ),
+                },
+                windows: {
+                    label: "Windows",
+                    cmd: `irm https://uniskill.ai/connect.ps1 | iex`,
+                    rendered: (
+                        <code className="break-all block">
+                            <span className="text-slate-500">&gt; </span>
+                            <span className="text-blue-400">irm</span>
+                            <span className="text-slate-400"> </span>
+                            <span className="text-green-400">https://uniskill.ai/connect.ps1</span>
+                            <span className="text-slate-400"> | </span>
+                            <span className="text-blue-400">iex</span>
+                        </code>
+                    ),
+                },
+            };
+        }
     };
+
+    const commands = getCommands();
 
     const handleCopy = () => {
         navigator.clipboard.writeText(commands[os].cmd);
