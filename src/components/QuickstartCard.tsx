@@ -91,7 +91,6 @@ const QuickstartCard = () => {
                                 : "text-slate-400 hover:text-slate-200"
                                 }`}
                         >
-                            {tab === "mac" ? <Apple size={12} /> : <Monitor size={12} />}
                             {commands[tab].label}
                         </button>
                     ))}
