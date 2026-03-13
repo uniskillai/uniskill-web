@@ -1,9 +1,9 @@
 ---
-id: "uniskill_weather"
-name: "Global Weather"
+skill_name: "uniskill_weather"
+display_name: "Global Weather"
 emoji: "🌤️"
 status: "Official"
-costPerCall: 0
+cost_per_call: 0
 category: "utilities"
 tags: ["weather", "wttr", "forecast"]
 gradientFrom: "from-blue-400"

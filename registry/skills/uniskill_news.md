@@ -1,9 +1,9 @@
 ---
-id: "uniskill_news"
-name: "Global News"
+skill_name: "uniskill_news"
+display_name: "Global News"
 emoji: "📰"
 status: "Official"
-costPerCall: 5
+cost_per_call: 5
 category: "web_search"
 tags: ["news", "summary", "headlines"]
 gradientFrom: "from-indigo-500"

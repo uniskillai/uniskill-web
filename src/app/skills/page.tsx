@@ -64,9 +64,9 @@ export default function SkillsStorePage() {
             // 逻辑 2：匹配顶部搜索框（模糊匹配 Name, Description, 以及 Tags）
             const query = searchQuery.toLowerCase().trim();
             const matchSearch = !query ||
-                skill.name?.toLowerCase().includes(query) ||
+                skill.display_name?.toLowerCase().includes(query) ||
                 skill.description?.toLowerCase().includes(query) ||
-                skill.id?.toLowerCase().includes(query) ||
+                skill.skill_name?.toLowerCase().includes(query) ||
                 (skill.tags && skill.tags.some((tag: string) => tag.toLowerCase().includes(query)));
 
             return matchCategory && matchSearch;
@@ -136,8 +136,8 @@ export default function SkillsStorePage() {
                             <AnimatePresence mode="popLayout">
                                 {filteredSkills.map((skill, index) => (
                                     <motion.a
-                                        href={`/skills/${skill.id}`}
-                                        key={skill.id}
+                                        href={`/skills/${skill.skill_name}`}
+                                        key={skill.skill_name}
                                         layout
                                         initial={{ opacity: 0, scale: 0.95 }}
                                         animate={{ opacity: 1, scale: 1 }}
@@ -157,7 +157,7 @@ export default function SkillsStorePage() {
                                             </span>
                                         </div>
 
-                                        <h3 className="text-base font-bold text-white mb-2 group-hover:text-blue-300 transition-colors">{skill.name}</h3>
+                                        <h3 className="text-base font-bold text-white mb-2 group-hover:text-blue-300 transition-colors">{skill.display_name}</h3>
 
                                         <p className="text-sm text-slate-400 leading-relaxed mb-6 flex-grow line-clamp-3">{skill.description}</p>
 
@@ -171,12 +171,12 @@ export default function SkillsStorePage() {
                                         </div>
 
                                         <div className="flex items-center justify-between pt-4 border-t border-slate-700/50 mt-auto">
-                                            <code className="text-[10px] text-slate-500 bg-[#050810] px-2 py-1 rounded font-mono border border-slate-800">{skill.id}</code>
+                                            <code className="text-[10px] text-slate-500 bg-[#050810] px-2 py-1 rounded font-mono border border-slate-800">{skill.skill_name}</code>
                                             <div className="flex items-center gap-1">
                                                 <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" strokeWidth="2">
                                                     <polygon points="13,2 3,14 12,14 11,22 21,10 12,10 13,2" />
                                                 </svg>
-                                                <span className="text-xs font-bold text-purple-400">{skill.costPerCall ?? 1} CR</span>
+                                                <span className="text-xs font-bold text-purple-400">{skill.cost_per_call ?? 1} CR</span>
                                             </div>
                                         </div>
                                     </motion.a>

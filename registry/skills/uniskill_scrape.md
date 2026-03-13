@@ -1,9 +1,9 @@
 ---
-id: "uniskill_scrape"
-name: "Web Scraper"
+skill_name: "uniskill_scrape"
+display_name: "Web Scraper"
 emoji: "🕷️"
 status: "Official"
-costPerCall: 10
+cost_per_call: 10
 category: "web_search"
 tags: ["scrape", "extraction", "data"]
 gradientFrom: "from-emerald-500"

@@ -12,16 +12,16 @@ import Navbar from "@/components/Navbar";
 
 // 逻辑：升级后的平台化标准数据规范，新增 returns 字段
 export interface SkillSpec {
-    name: string;
+    display_name: string;
     description: string;
-    costPerCall?: number; // 👈 补全定价字段
+    cost_per_call?: number; // 👈 补全定价字段
     parameters: Record<string, any>;
     returns?: Record<string, any> | null;
     implementation: Record<string, any>;
 }
 
 export interface SkillDetailProps {
-    skillId: string;
+    skill_name: string;
     skill: SkillSpec;
     isOfficial: boolean;
     isOwner: boolean;
@@ -75,7 +75,7 @@ function CopyButton({ text, label = "Copy" }: { text: string; label?: string }) 
     );
 }
 
-export const SkillDetail: React.FC<SkillDetailProps> = ({ skillId, skill, isOfficial, isOwner }) => {
+export const SkillDetail: React.FC<SkillDetailProps> = ({ skill_name, skill, isOfficial, isOwner }) => {
     const { data: session } = useSession();
     const isLoggedIn = !!session;
     const hasRealKey = isLoggedIn && session.user?.image;
@@ -91,7 +91,7 @@ export const SkillDetail: React.FC<SkillDetailProps> = ({ skillId, skill, isOffi
         required: required.includes(key) || properties[key].required
     }));
 
-    const meta = META_FALLBACK[skillId] || META_FALLBACK["default"];
+    const meta = META_FALLBACK[skill_name] || META_FALLBACK["default"];
 
     // 逻辑：如果网关/数据库还没有返回 returns 字段，或者为空，我们优先使用模拟元数据进行展示
     const finalReturns = (skill.returns && Object.keys(skill.returns).length > 0) ? skill.returns : meta.returns;
@@ -101,7 +101,7 @@ export const SkillDetail: React.FC<SkillDetailProps> = ({ skillId, skill, isOffi
   -H "Authorization: Bearer ${displayKey}" \\
   -H "Content-Type: application/json" \\
   -d '{
-    "skillName": "${skillId}",
+    "skill_name": "${skill_name}",
     "params": {} 
   }'`;
 
@@ -121,21 +121,21 @@ export const SkillDetail: React.FC<SkillDetailProps> = ({ skillId, skill, isOffi
                         <div className="mb-8">
                             {/* 逻辑：主标题显示给人类看的友好 Name */}
                             <h1 className="text-4xl font-extrabold text-white mb-3 tracking-tight">
-                                {skill.name || skillId}
+                                {skill.display_name || skill_name}
                             </h1>
 
                             <div className="flex items-center gap-3">
                                 {/* 逻辑：副标题/徽章显示给机器执行用的严格 ID，并配有一键复制功能 */}
                                 <div className="group flex items-center gap-2 bg-[#050810]/80 border border-slate-700/80 px-3 py-1.5 rounded-lg backdrop-blur-sm cursor-pointer hover:border-blue-500/50 transition-colors"
                                     onClick={() => {
-                                        navigator.clipboard.writeText(skillId);
+                                        navigator.clipboard.writeText(skill_name);
                                         // TODO: Add toast notification if needed
                                     }}
                                     title="Click to copy Skill ID"
                                 >
                                     <span className="text-slate-500 text-xs font-mono uppercase tracking-wider">ID:</span>
                                     <code className="text-blue-400 font-mono text-sm font-bold group-hover:text-blue-300 transition-colors">
-                                        {skillId}
+                                        {skill_name}
                                     </code>
                                     <svg className="w-4 h-4 text-slate-500 group-hover:text-blue-400 transition-colors ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
@@ -217,7 +217,7 @@ export const SkillDetail: React.FC<SkillDetailProps> = ({ skillId, skill, isOffi
                             <div className="flex items-center justify-between mb-2">
                                 <span className="text-sm text-slate-300">Cost per Request</span>
                                 <div className="flex items-center gap-1">
-                                    <span className="text-xl font-black text-white">{skill.costPerCall ?? 0}</span>
+                                    <span className="text-xl font-black text-white">{skill.cost_per_call ?? 0}</span>
                                     <span className="text-[10px] text-slate-500 ml-0.5 font-bold">CR</span>
                                 </div>
                             </div>
@@ -246,7 +246,7 @@ export const SkillDetail: React.FC<SkillDetailProps> = ({ skillId, skill, isOffi
                             <div className="code-block text-[11px] font-mono overflow-x-auto bg-[#050810] border border-slate-800/50 p-4 rounded-lg leading-relaxed text-slate-300">
                                 <span className="text-blue-400">curl</span> -X POST https://api.uniskill.ai/v1/execute \
                                 <br /> -H "Authorization: Bearer <span className={hasRealKey ? "text-cyan-400" : "text-slate-600"}>{displayKey}</span>" \
-                                <br /> -d '&#123;"skillName": "<span className="text-green-400">{skillId}</span>"&#125;'
+                                <br /> -d '&#123;"skill_name": "<span className="text-green-400">{skill_name}</span>"&#125;'
                             </div>
                             {!isLoggedIn && (
                                 <button

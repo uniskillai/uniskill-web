@@ -1,9 +1,9 @@
 ---
-id: "uniskill_search"
-name: "Web Search"
+skill_name: "uniskill_search"
+display_name: "Web Search"
 emoji: "🌐"
 status: "Official"
-costPerCall: 5
+cost_per_call: 5
 category: "web_search"
 tags: ["search", "real-time", "tavily"]
 gradientFrom: "from-blue-500"

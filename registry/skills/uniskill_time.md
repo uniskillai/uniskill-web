@@ -1,9 +1,9 @@
 ---
-id: "uniskill_time"
-name: "Time & Timezone Engine"
+skill_name: "uniskill_time"
+display_name: "Time & Timezone Engine"
 emoji: "🕒"
 status: "Official"
-costPerCall: 0
+cost_per_call: 0
 category: "utilities"
 tags: ["time", "timezone", "native", "no-hallucination"]
 gradientFrom: "from-orange-500"

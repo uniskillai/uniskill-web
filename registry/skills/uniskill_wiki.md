@@ -1,9 +1,9 @@
 ---
-id: "uniskill_wiki"
-name: "Wikipedia Engine"
+skill_name: "uniskill_wiki"
+display_name: "Wikipedia Engine"
 emoji: "📚"
 status: "Official"
-costPerCall: 1
+cost_per_call: 1
 category: "web_search"
 tags: ["wikipedia", "encyclopedia", "knowledge"]
 gradientFrom: "from-slate-300"

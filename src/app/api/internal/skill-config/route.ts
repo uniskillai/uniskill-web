@@ -39,15 +39,18 @@ export async function GET(request: NextRequest) {
 
         // 逻辑：构造大一统 JSON 结构返回给网关
         return NextResponse.json({
-            id: skillData.id,
+            skill_name: skillData.skill_name,
             source: skillData.status.toLowerCase(),
             meta: {
-                name: skillData.name,
+                display_name: skillData.display_name,
                 emoji: skillData.emoji,
-                cost: skillData.costPerCall,
+                cost: skillData.cost_per_call,
                 category: skillData.category,
                 tags: skillData.tags
             },
+            // Maintain backward compatibility with top-level fields for the gateway's direct config parsing
+            display_name: skillData.display_name,
+            cost_per_call: skillData.cost_per_call,
             config: typeof skillData.implementation === 'string'
                 ? yaml.load(skillData.implementation)
                 : skillData.implementation,

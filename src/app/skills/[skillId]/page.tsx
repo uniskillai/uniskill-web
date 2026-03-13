@@ -27,7 +27,7 @@ export default async function SkillPage({ params }: PageProps) {
         <main className="min-h-screen bg-[#0a0f1e]">
             {/* 逻辑：由于现在是直接读本地文件，我们将 data 结构对齐传递给客户端组件 */}
             <SkillDetail
-                skillId={skillId}
+                skill_name={skillId}
                 skill={skillData}
                 isOfficial={skillData.status === "Official"}
                 isOwner={true} // 本地预览模式默认拥有权限

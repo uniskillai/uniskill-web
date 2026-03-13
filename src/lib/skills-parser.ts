@@ -8,11 +8,11 @@ import matter from "gray-matter";
 const REGISTRY_PATH = path.join(process.cwd(), "registry", "skills");
 
 export interface SkillData {
-    id: string;
-    name: string;
+    skill_name: string;
+    display_name: string;
     emoji: string;
     status: string;
-    costPerCall: number;
+    cost_per_call: number;
     category: string;
     tags: string[];
     description: string;
@@ -45,11 +45,11 @@ export function parseSkillFile(skillId: string): SkillData | null {
     const implementation = implMatch ? implMatch[1] : "";
 
     return {
-        id: frontmatter.id || skillId,
-        name: frontmatter.name || skillId,
+        skill_name: frontmatter.skill_name || skillId,
+        display_name: frontmatter.display_name || skillId,
         emoji: frontmatter.emoji || "🧩",
         status: frontmatter.status || "Official",
-        costPerCall: frontmatter.costPerCall || 0,
+        cost_per_call: frontmatter.cost_per_call || 0,
         category: frontmatter.category || "utilities",
         tags: frontmatter.tags || [],
         description: description,

@@ -1,9 +1,9 @@
 ---
-id: "uniskill_scholar"
-name: "Semantic Scholar"
+skill_name: "uniskill_scholar"
+display_name: "Semantic Scholar"
 emoji: "🎓"
 status: "Official"
-costPerCall: 1
+cost_per_call: 1
 category: "web_search"
 tags: ["paper", "academic", "research", "semantic-scholar"]
 gradientFrom: "from-sky-600"

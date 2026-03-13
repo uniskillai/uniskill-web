@@ -1,9 +1,9 @@
 ---
-id: "uniskill_math"
-name: "Math Engine"
+skill_name: "uniskill_math"
+display_name: "Math Engine"
 emoji: "🧮"
 status: "Official"
-costPerCall: 0.1
+cost_per_call: 0.1
 category: "utilities"
 tags: ["math", "calculation", "native", "no-hallucination"]
 gradientFrom: "from-fuchsia-500"

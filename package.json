@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "sync-kv": "tsx scripts/sync-to-kv.ts"
+    "sync-registry": "tsx scripts/sync-registry.ts"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.98.0",
