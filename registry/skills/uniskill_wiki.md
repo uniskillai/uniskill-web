@@ -3,7 +3,7 @@ skill_name: "uniskill_wiki"
 display_name: "Wikipedia Engine"
 emoji: "📚"
 status: "Official"
-cost_per_call: 1
+cost_per_call: 2
 category: "web_search"
 tags: ["wikipedia", "encyclopedia", "knowledge"]
 gradientFrom: "from-slate-300"

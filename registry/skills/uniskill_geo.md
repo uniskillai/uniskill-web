@@ -3,7 +3,7 @@ skill_name: "uniskill_geo"
 display_name: "Location & Map Engine"
 emoji: "🗺️"
 status: "Official"
-cost_per_call: 0.5
+cost_per_call: 2
 category: "utility"
 tags: ["geo", "map", "location", "timezone", "geocoding"]
 gradientFrom: "from-emerald-500"

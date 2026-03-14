@@ -3,7 +3,7 @@ skill_name: "uniskill_crypto_util"
 display_name: "Crypto & Encoding"
 emoji: "🔐"
 status: "Official"
-cost_per_call: 0.1
+cost_per_call: 0
 category: "utilities"
 tags: ["crypto", "hash", "base64", "uuid", "native"]
 gradientFrom: "from-slate-700"

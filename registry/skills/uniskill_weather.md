@@ -3,7 +3,7 @@ skill_name: "uniskill_weather"
 display_name: "Global Weather"
 emoji: "🌤️"
 status: "Official"
-cost_per_call: 0
+cost_per_call: 1
 category: "utilities"
 tags: ["weather", "wttr", "forecast"]
 gradientFrom: "from-blue-400"

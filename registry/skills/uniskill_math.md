@@ -3,7 +3,7 @@ skill_name: "uniskill_math"
 display_name: "Math Engine"
 emoji: "🧮"
 status: "Official"
-cost_per_call: 0.1
+cost_per_call: 0
 category: "utilities"
 tags: ["math", "calculation", "native", "no-hallucination"]
 gradientFrom: "from-fuchsia-500"
