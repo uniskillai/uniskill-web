@@ -130,9 +130,15 @@ async function syncRegistry() {
                 .upsert({
                     skill_name: skill_name,
                     display_name: display_name,
+                    emoji: frontmatter.emoji || "🧩",
+                    description: description,
                     tags: tags,
                     cost_per_call: cost_per_call,
-                    category: status === "official" ? "official" : "community",
+                    category: category, // Functional category (web_search, utilities, etc)
+                    status: frontmatter.status || "Official", // Identity badge (Official, Community)
+                    gradient_from: frontmatter.gradientFrom || "from-slate-600",
+                    gradient_to: frontmatter.gradientTo || "from-slate-400",
+                    parameters: parameters, 
                     creator_uid: SYSTEM_UID
                 }, {
                     onConflict: "skill_name"
