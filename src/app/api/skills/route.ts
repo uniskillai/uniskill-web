@@ -3,6 +3,8 @@
 
 import { NextResponse } from "next/server";
 import { getAllSkills } from "@/lib/skills-parser";
+ 
+export const dynamic = 'force-dynamic';
 
 export async function GET() {
     try {
