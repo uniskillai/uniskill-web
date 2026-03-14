@@ -111,29 +111,29 @@ const plans = [
    ────────────────────────────────────────────────────────────────────── */
 const consumptionWeights = [
     {
-        tool: "Basic Connector",
-        weight: 1,
-        description: "Simple API passthrough calls",
+        tool: "Utility Skills",
+        weight: "0",
+        description: "Time&Math",
         color: "text-slate-400",
         dotColor: "bg-slate-400",
     },
     {
-        tool: "Search / News Skill",
-        weight: 10,
+        tool: "Search Skills",
+        weight: "5",
         description: "Web search & news aggregation",
         color: "text-blue-400",
         dotColor: "bg-blue-400",
     },
     {
-        tool: "Advanced Web Scrape",
-        weight: 20,
+        tool: "Web Scraper",
+        weight: "15",
         description: "Full-page extraction & parsing",
         color: "text-purple-400",
         dotColor: "bg-purple-400",
     },
     {
-        tool: "Social Media Trends",
-        weight: 30,
+        tool: "Expert Skills",
+        weight: "20+",
         description: "Real-time social signal analysis",
         color: "text-pink-400",
         dotColor: "bg-pink-400",
@@ -332,7 +332,7 @@ export default function PricingSection() {
                                 </svg>
                             </div>
                             <h3 className="text-white font-bold text-lg">
-                                Consumption Weights
+                                Marketplace Pricing Examples
                             </h3>
                             <span className="text-slate-500 text-sm">
                                 — points deducted per API call

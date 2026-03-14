@@ -31,7 +31,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`${inter.variable} dark`}>
-      <body className="bg-[#0a0f1e] text-white antialiased">
+      <body className="bg-[#0a0f1e] text-white antialiased" suppressHydrationWarning>
         {/* Providers 包裹层包含 NextAuth SessionProvider */}
         <Providers>{children}</Providers>
       </body>
