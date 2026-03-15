@@ -11,7 +11,7 @@ tags:
 gradientFrom: from-slate-300
 gradientTo: to-gray-500
 credits_per_call: 2
-usd_per_call: 0.001
+usd_per_call: 0.002
 ---
 
 # Wikipedia Knowledge Engine

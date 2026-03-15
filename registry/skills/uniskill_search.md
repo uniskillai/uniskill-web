@@ -11,7 +11,7 @@ tags:
 gradientFrom: from-blue-500
 gradientTo: to-cyan-400
 credits_per_call: 5
-usd_per_call: 0.001
+usd_per_call: 0.005
 ---
 
 # uniskill_search

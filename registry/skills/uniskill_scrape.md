@@ -11,7 +11,7 @@ tags:
 gradientFrom: from-emerald-500
 gradientTo: to-teal-400
 credits_per_call: 15
-usd_per_call: 0.001
+usd_per_call: 0.015
 ---
 
 # uniskill_scrape

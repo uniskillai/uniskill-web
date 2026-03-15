@@ -12,7 +12,7 @@ tags:
 gradientFrom: from-sky-600
 gradientTo: to-indigo-600
 credits_per_call: 10
-usd_per_call: 0.001
+usd_per_call: 0.01
 ---
 
 # Semantic Scholar Academic Engine

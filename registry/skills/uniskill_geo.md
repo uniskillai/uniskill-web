@@ -13,7 +13,7 @@ tags:
 gradientFrom: from-emerald-500
 gradientTo: to-teal-700
 credits_per_call: 2
-usd_per_call: 0.001
+usd_per_call: 0.002
 ---
 
 # Location & Map Context Engine
